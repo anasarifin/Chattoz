@@ -1,12 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,7 +7,7 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 
 import {
   Header,
@@ -26,6 +18,8 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App = () => {
+  const [maps, setMaps] = useState([]);
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -33,13 +27,30 @@ const App = () => {
         <Text>wew</Text>
         <MapView
           initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
+            latitude: -6.391504,
+            longitude: 106.82763,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.04,
           }}
-          style={{height: '50%', width: '100%'}}
-        />
+          style={{height: '75%', width: '100%'}}
+          onPress={e =>
+            setMaps([...maps, {coordinate: e.nativeEvent.coordinate}])
+          }>
+          {maps.map((map, index) => {
+            return (
+              <Marker
+                coordinate={map.coordinate}
+                title={'Camp'}
+                description={(index + 1).toString()}
+              />
+            );
+          })}
+          {/* <Marker
+            coordinate={{latitude: -6.391504, longitude: 106.82763}}
+            title={'Camp'}
+            description={'Camp Depok'}
+          /> */}
+        </MapView>
       </SafeAreaView>
     </>
   );
