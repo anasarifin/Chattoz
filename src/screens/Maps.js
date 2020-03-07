@@ -9,12 +9,16 @@ const Maps = () => {
     <>
       <StatusBar translucent={true} backgroundColor="rgba(0,0,0,.4)" />
       <MapView
-        initialRegion={{
+        region={{
           latitude: -6.391504,
           longitude: 106.82763,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.04,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
         }}
+        zoomControlEnabled={true}
+        showsMyLocationButton={true}
+        showsUserLocation={true}
+        showsCompass={true}
         style={{height: '100%', width: '100%'}}
         onPress={e =>
           setMaps([...maps2, {coordinate: e.nativeEvent.coordinate}])

@@ -16,6 +16,7 @@ import {
 import ImagePicker from 'react-native-image-picker';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
+import {Kaede} from 'react-native-textinput-effects';
 
 const url = 'http://100.24.32.116:9999/api/v1/products';
 
@@ -101,22 +102,13 @@ const Profile = props => {
     <SafeAreaView>
       <StatusBar backgroundColor="rgba(0,0,0,.3)" translucent={false} />
       <View>
-        <TextInput label="Name" onChange={e => setName(e.nativeEvent.text)} />
-        <TextInput label="Email" onChange={e => setEmail(e.nativeEvent.text)} />
-        <TextInput label="Phone" onChange={e => setPhone(e.nativeEvent.text)} />
-        <TextInput
-          label="Address"
-          onChange={e => setAddress(e.nativeEvent.text)}
-        />
-        <TextInput
-          label="Birthdate"
-          onChange={e => setBirth(e.nativeEvent.text)}
-        />
-        <TextInput
-          label="Gender"
-          onChange={e => setGender(e.nativeEvent.text)}
-        />
-        <TextInput
+        <Kaede label="Name" onChange={e => setName(e.nativeEvent.text)} />
+        <Kaede label="Email" onChange={e => setEmail(e.nativeEvent.text)} />
+        <Kaede label="Phone" onChange={e => setPhone(e.nativeEvent.text)} />
+        <Kaede label="Address" onChange={e => setAddress(e.nativeEvent.text)} />
+        <Kaede label="Birthdate" onChange={e => setBirth(e.nativeEvent.text)} />
+        <Kaede label="Gender" onChange={e => setGender(e.nativeEvent.text)} />
+        <Kaede
           label="Location"
           onChange={e => setLocation(e.nativeEvent.text)}
         />
