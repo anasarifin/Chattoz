@@ -13,10 +13,12 @@ import {
   Button,
 } from 'react-native';
 // import {Input, Button} from 'react-native-elements';
+import {StackActions} from '@react-navigation/native';
 import ImagePicker from 'react-native-image-picker';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Kaede} from 'react-native-textinput-effects';
+import Geolocation from 'react-native-geolocation-service';
 
 const url = 'http://100.24.32.116:9999/api/v1/products';
 
@@ -132,7 +134,22 @@ const Profile = props => {
       <Button
         title="Change"
         // onPress={this.postData}
-        onPress={postData}
+        onPress={() => {
+          Geolocation.getCurrentPosition(
+            position => {
+              console.log(position);
+            },
+            error => {
+              // See error code charts below.
+              console.log(error.code, error.message);
+            },
+            {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+          );
+        }}
+      />
+      <Button
+        title="Logout"
+        onPress={() => props.navigation.dispatch(StackActions.replace('login'))}
       />
     </SafeAreaView>
   );

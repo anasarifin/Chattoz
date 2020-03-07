@@ -16,7 +16,7 @@ import {StackActions} from '@react-navigation/native';
 
 const url = 'http://100.24.32.116:9999/api/v1/login';
 
-const Login = props => {
+const Register = props => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState('This is warning!');
@@ -49,7 +49,7 @@ const Login = props => {
           onPress={() =>
             props.navigation.dispatch(StackActions.replace('home'))
           }>
-          <Text style={styles.loginButton}>Login</Text>
+          <Text style={styles.loginButton}>Register</Text>
         </TouchableOpacity>
         {/* <ActivityIndicator
           style={this.state.loading ? styles.loadingOn : styles.loading}
@@ -58,12 +58,12 @@ const Login = props => {
         /> */}
       </View>
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account?</Text>
+        <Text style={styles.footerText}>Already have an account?</Text>
         <TouchableOpacity>
           <Text
             style={styles.registerButton}
-            onPress={() => props.navigation.navigate('register')}>
-            Register
+            onPress={() => props.navigation.navigate('login')}>
+            Login
           </Text>
         </TouchableOpacity>
       </View>
@@ -150,4 +150,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Register;
