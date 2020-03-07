@@ -7,52 +7,23 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import Home from './src/screens/Home.js';
+import Maps from './src/screens/Maps';
+import Login from './src/screens/Login';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Stack = createStackNavigator();
 
 const App = () => {
-  const [maps, setMaps] = useState([]);
-
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <Text>wew</Text>
-        <MapView
-          initialRegion={{
-            latitude: -6.391504,
-            longitude: 106.82763,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.04,
-          }}
-          style={{height: '75%', width: '100%'}}
-          onPress={e =>
-            setMaps([...maps, {coordinate: e.nativeEvent.coordinate}])
-          }>
-          {maps.map((map, index) => {
-            return (
-              <Marker
-                coordinate={map.coordinate}
-                title={'Camp'}
-                description={(index + 1).toString()}
-              />
-            );
-          })}
-          {/* <Marker
-            coordinate={{latitude: -6.391504, longitude: 106.82763}}
-            title={'Camp'}
-            description={'Camp Depok'}
-          /> */}
-        </MapView>
-      </SafeAreaView>
-    </>
+    <NavigationContainer>
+      <Stack.Navigator headerMode="none" initialRouteName="home">
+        <Stack.Screen name="home" component={Home} />
+        <Stack.Screen name="login" component={Login} />
+        <Stack.Screen name="maps" component={Maps} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
