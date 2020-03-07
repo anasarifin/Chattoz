@@ -20,7 +20,7 @@ const Home = () => {
       initialRouteName="chats"
       tabBarOptions={{
         showLabel: true,
-        labelPosition: 'beside-icon',
+        // labelPosition: 'beside-icon',
         style: {marginBottom: -22},
       }}>
       <Stack.Screen
