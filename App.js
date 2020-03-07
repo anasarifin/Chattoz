@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import Home from './src/screens/Home.js';
-import Maps from './src/screens/Maps';
+import Home from './src/navigators/Home';
 import Login from './src/screens/Login';
 
 const Stack = createStackNavigator();
@@ -21,7 +20,6 @@ const App = () => {
       <Stack.Navigator headerMode="none" initialRouteName="home">
         <Stack.Screen name="home" component={Home} />
         <Stack.Screen name="login" component={Login} />
-        <Stack.Screen name="maps" component={Maps} />
       </Stack.Navigator>
     </NavigationContainer>
   );

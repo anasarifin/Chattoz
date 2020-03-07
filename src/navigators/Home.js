@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Chats from './Chats';
-import Maps from './Maps';
+import Chats from '../screens/Chats';
+import Maps from '../screens/Maps';
+import Profile from '../screens/Profile';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import Profile from './Profile';
 
 const Stack = createBottomTabNavigator();
 
@@ -17,6 +17,7 @@ const Home = () => {
     // </View>
     <Stack.Navigator
       headerMode="none"
+      initialRouteName="chats"
       tabBarOptions={{
         showLabel: true,
         labelPosition: 'beside-icon',
@@ -48,7 +49,7 @@ const Home = () => {
       />
       <Stack.Screen
         name="profile"
-        component={Maps}
+        component={Profile}
         options={{
           title: 'Profile',
           tabBarIcon: () => (
