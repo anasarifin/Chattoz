@@ -12,10 +12,18 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Home from './src/navigators/Home';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
+import {decode, encode} from 'base-64';
 
 const Stack = createStackNavigator();
 
 const App = () => {
+  if (!global.btoa) {
+    global.btoa = encode;
+  }
+  if (!global.atob) {
+    global.atob = decode;
+  }
+
   useEffect(() => console.log('OK!!!'), []);
 
   return (
