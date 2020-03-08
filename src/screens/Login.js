@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   SafeAreaView,
@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  Alert,
+  BackHandler,
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
@@ -21,6 +23,12 @@ const Login = props => {
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState('This is warning!');
   const [loading, setLoading] = useState('');
+
+  useEffect(() => {
+    if (props.route.params) {
+      BackHandler.addEventListener('hardwareBackPress', e => false);
+    }
+  });
 
   return (
     <SafeAreaView style={styles.container}>

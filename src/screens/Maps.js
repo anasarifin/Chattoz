@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {StatusBar} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
+import {StatusBar, Text} from 'react-native';
+import MapView, {Marker, Callout} from 'react-native-maps';
 
 const Maps = () => {
   const [maps2, setMaps] = useState([]);
@@ -25,12 +25,11 @@ const Maps = () => {
         }>
         {maps2.map((map, index) => {
           return (
-            <Marker
-              key={index}
-              coordinate={map.coordinate}
-              title={'Camp'}
-              description={(index + 1).toString()}
-            />
+            <Marker key={index} coordinate={map.coordinate}>
+              <Callout>
+                <Text>xxx</Text>
+              </Callout>
+            </Marker>
           );
         })}
       </MapView>

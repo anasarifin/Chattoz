@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Chats from '../screens/Chats';
+import Chats from './Chats';
 import Maps from '../screens/Maps';
 import Profile from '../screens/Profile';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';

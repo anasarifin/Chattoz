@@ -1,12 +1,21 @@
 import React from 'react';
+// import firebase from 'react-native-firebase';
 import {GiftedChat} from 'react-native-gifted-chat';
+import {db} from '../configs/firebase';
 
-class Chats extends React.Component {
-  state = {
-    messages: [],
-  };
+// let itemsRef = db.ref('/chats');
+
+class ChatMain extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      messages: [],
+    };
+  }
 
   componentDidMount() {
+    const ref = db;
+    console.log(ref);
     this.setState({
       messages: [
         {
@@ -43,4 +52,4 @@ class Chats extends React.Component {
   }
 }
 
-export default Chats;
+export default ChatMain;
