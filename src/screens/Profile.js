@@ -20,15 +20,33 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {Kaede} from 'react-native-textinput-effects';
 import Geolocation from 'react-native-geolocation-service';
 
+import {
+  Container,
+  Header,
+  Content,
+  Form,
+  Item,
+  Input,
+  Label,
+} from 'native-base';
+
 const url = 'http://100.24.32.116:9999/api/v1/products';
 
 const Profile = props => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [address, setAddress] = useState('');
-  const [birth, setBirth] = useState('');
-  const [gender, setGender] = useState('');
+  const [dummy, setDummy] = useState({
+    name: 'xxxxx',
+    email: 'xxxx@email.com',
+    phone: '0193209209',
+    birth: '12-12-12',
+    address: 'xxxxxxxxxxxxxxx',
+    gender: 'xxxxx',
+  });
+  const [name, setName] = useState(dummy.name);
+  const [email, setEmail] = useState(dummy.email);
+  const [phone, setPhone] = useState(dummy.phone);
+  const [address, setAddress] = useState(dummy.address);
+  const [birth, setBirth] = useState(dummy.birth);
+  const [gender, setGender] = useState(dummy.gender);
   const [location, setLocation] = useState('');
 
   const postData = () => {
@@ -104,16 +122,50 @@ const Profile = props => {
     <SafeAreaView>
       <StatusBar backgroundColor="rgba(0,0,0,.3)" translucent={false} />
       <View>
-        <Kaede label="Name" onChange={e => setName(e.nativeEvent.text)} />
-        <Kaede label="Email" onChange={e => setEmail(e.nativeEvent.text)} />
-        <Kaede label="Phone" onChange={e => setPhone(e.nativeEvent.text)} />
-        <Kaede label="Address" onChange={e => setAddress(e.nativeEvent.text)} />
-        <Kaede label="Birthdate" onChange={e => setBirth(e.nativeEvent.text)} />
-        <Kaede label="Gender" onChange={e => setGender(e.nativeEvent.text)} />
-        <Kaede
-          label="Location"
-          onChange={e => setLocation(e.nativeEvent.text)}
-        />
+        <Form>
+          <Item stackedLabel>
+            <Label style={styles.label}>Username</Label>
+            <Input
+              defaultValue={dummy.name}
+              onChange={e => setName(e.nativeEvent.text)}
+            />
+          </Item>
+          <Item stackedLabel>
+            <Label style={styles.label}>Email</Label>
+            <Input
+              defaultValue={dummy.email}
+              onChange={e => setEmail(e.nativeEvent.text)}
+            />
+          </Item>
+          <Item stackedLabel>
+            <Label style={styles.label}>Phone</Label>
+            <Input
+              defaultValue={dummy.phone}
+              onChange={e => setPhone(e.nativeEvent.text)}
+            />
+          </Item>
+          <Item stackedLabel>
+            <Label style={styles.label}>Address</Label>
+            <Input
+              defaultValue={dummy.address}
+              onChange={e => setAddress(e.nativeEvent.text)}
+            />
+          </Item>
+          <Item stackedLabel>
+            <Label style={styles.label}>Birthdate</Label>
+            <Input
+              defaultValue={dummy.birth}
+              onChange={e => setBirth(e.nativeEvent.text)}
+            />
+          </Item>
+          <Item stackedLabel last>
+            <Label style={styles.label}>Gender</Label>
+            <Input
+              defaultValue={dummy.gender}
+              onChange={e => setGender(e.nativeEvent.text)}
+            />
+          </Item>
+        </Form>
         {/* <Picker
             selectedValue={this.state.category}
             style={styles.picker}
@@ -154,6 +206,10 @@ const Profile = props => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  label: {},
+});
 
 export default Profile;
 

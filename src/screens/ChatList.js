@@ -20,11 +20,7 @@ import app from '../configs/firebase';
 const ChatList = props => {
   const [friend, setFriend] = useState([1, 2, 3, 4, 5, 6]);
 
-  useEffect(() => {
-    console.log(app.database());
-  }, []);
-
-  // useEffect(() => console.log('OK bos !!!'), []);
+  useEffect(() => console.log('OK bos !!!'), []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,10 +32,12 @@ const ChatList = props => {
             <List>
               <ListItem avatar>
                 <Left>
-                  <Thumbnail source={{uri: 'Image URL'}} />
+                  <Thumbnail
+                    source={{uri: 'https://placeimg.com/140/140/any'}}
+                  />
                 </Left>
                 <Body>
-                  <Text>Kumar Pratik</Text>
+                  <Text>Kumar Pratiko</Text>
                 </Body>
               </ListItem>
             </List>

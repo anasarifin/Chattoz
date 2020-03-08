@@ -18,9 +18,20 @@ const App = () => {
   useEffect(() => console.log('OK!!!'), []);
 
   return (
-    <Stack.Navigator headerMode="none" initialRouteName="chat-list">
-      <Stack.Screen name="chat-list" component={ChatList} />
-      <Stack.Screen name="chat-main" component={ChatMain} />
+    <Stack.Navigator
+      headerMode="screen"
+      mode="modal"
+      initialRouteName="chat-list">
+      <Stack.Screen
+        name="chat-list"
+        component={ChatList}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="chat-main"
+        component={ChatMain}
+        options={{headerTitle: props => <Text>shit man</Text>}}
+      />
     </Stack.Navigator>
   );
 };
