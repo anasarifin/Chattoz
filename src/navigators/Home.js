@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Chats from './Chats';
 import Maps from '../screens/Maps';
 import Profile from '../screens/Profile';
+import Live from '../screens/Live';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -52,6 +53,18 @@ const Home = () => {
         component={Profile}
         options={{
           title: 'Profile',
+          tabBarIcon: () => (
+            <View>
+              <Ionicons size={25} name={'md-contact'} />
+            </View>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="live"
+        component={Live}
+        options={{
+          title: 'Live',
           tabBarIcon: () => (
             <View>
               <Ionicons size={25} name={'md-contact'} />

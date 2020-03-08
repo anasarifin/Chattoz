@@ -70,7 +70,7 @@ const Login = props => {
         <TouchableOpacity>
           <Text
             style={styles.registerButton}
-            onPress={() => props.navigation.navigate('register')}>
+            onPress={() => props.navigation.navigate('live')}>
             Register
           </Text>
         </TouchableOpacity>
