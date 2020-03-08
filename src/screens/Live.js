@@ -4,12 +4,14 @@ import app from '../configs/firebase';
 import 'firebase/firestore';
 import {AuthContext} from '../configs/auth';
 import firebase from 'firebase';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Live = () => {
   const db = app.firestore();
   const unsubscribe = () => {
-    db.collection('users')
-      .where('test', '==', 'true')
+    db.collection('chats')
+      .doc('yuna|steve')
+      .collection('chat')
       .onSnapshot(snapshot => {
         snapshot.forEach(doc => console.log(doc.data()));
       });
@@ -32,14 +34,14 @@ const Live = () => {
   //     );
   //   });
   return (
-    <View>
+    <SafeAreaView>
       <TouchableOpacity onPress={() => unsubscribe()}>
         <Text>This</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => add()}>
         <Text>Add</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
