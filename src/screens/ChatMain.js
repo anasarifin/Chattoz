@@ -32,28 +32,30 @@ class ChatMain extends React.Component {
   };
 
   componentDidMount() {
-    app
-      .firestore()
-      .collection('chats')
-      .doc('yuna|steve')
-      .collection('chat')
-      .onSnapshot(async snapshot => {
-        const final = [];
-        await snapshot.forEach(doc => {
-          final.push({
-            _id: 1,
-            text: doc.data().message,
-            createdAt: new Date(doc.data().time.toDate()),
-            user: {
+    () => {
+      app
+        .firestore()
+        .collection('chats')
+        .doc('yuna|steve')
+        .collection('chat')
+        .onSnapshot(async snapshot => {
+          const final = [];
+          await snapshot.forEach(doc => {
+            final.push({
               _id: 1,
-              name: doc.data().sender,
-            },
+              text: doc.data().message,
+              createdAt: new Date(doc.data().time.toDate()),
+              user: {
+                _id: 1,
+                name: doc.data().sender,
+              },
+            });
+          });
+          this.setState({
+            messages: final,
           });
         });
-        this.setState({
-          messages: final,
-        });
-      });
+    };
 
     // this.setState({
     //   messages: [

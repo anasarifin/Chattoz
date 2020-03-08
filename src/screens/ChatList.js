@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Container,
   Header,
-  Content,
+  Title,
   List,
   ListItem,
   Left,
@@ -24,6 +24,15 @@ const ChatList = props => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Header
+        style={{backgroundColor: 'rgba(33,150,243,1)'}}
+        androidStatusBarColor="rgba(25,118,210,1)">
+        <Left style={{flex: 1}} />
+        <Body style={{flex: 1}}>
+          <Title style={{alignSelf: 'center'}}>Messages</Title>
+        </Body>
+        <Right style={{flex: 1}} />
+      </Header>
       {friend.map((x, i) => {
         return (
           <TouchableOpacity
@@ -45,7 +54,7 @@ const ChatList = props => {
         );
       })}
       <View style={styles.add}>
-        <AntDesign name="pluscircle" size={60} />
+        <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
       </View>
     </SafeAreaView>
   );
@@ -54,6 +63,13 @@ const ChatList = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    fontSize: 40,
+    marginTop: 15,
+    marginBottom: 10,
+    marginRight: 15,
+    textAlign: 'right',
   },
   list: {
     width: '90%',

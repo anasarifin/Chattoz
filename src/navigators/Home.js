@@ -20,9 +20,11 @@ const Home = () => {
       headerMode="none"
       initialRouteName="chats"
       tabBarOptions={{
-        showLabel: true,
+        showLabel: false,
         // labelPosition: 'beside-icon',
-        style: {marginBottom: -22},
+        style: {marginBottom: -24},
+        inactiveBackgroundColor: 'rgba(25,118,210,1)',
+        activeBackgroundColor: 'rgba(25,118,210,1)',
       }}>
       <Stack.Screen
         name="maps"
@@ -31,7 +33,7 @@ const Home = () => {
           title: 'Maps',
           tabBarIcon: () => (
             <View>
-              <FontAwesome size={25} name={'map-marker-alt'} />
+              <FontAwesome size={25} name={'map-marker-alt'} color={'white'} />
             </View>
           ),
         }}
@@ -43,7 +45,11 @@ const Home = () => {
           title: 'Chats',
           tabBarIcon: () => (
             <View>
-              <MaterialIcons size={25} name={'message-reply-text'} />
+              <MaterialIcons
+                size={25}
+                name={'message-reply-text'}
+                color={'white'}
+              />
             </View>
           ),
         }}
@@ -55,7 +61,7 @@ const Home = () => {
           title: 'Profile',
           tabBarIcon: () => (
             <View>
-              <Ionicons size={25} name={'md-contact'} />
+              <Ionicons size={25} name={'md-contact'} color={'white'} />
             </View>
           ),
         }}
@@ -67,7 +73,7 @@ const Home = () => {
           title: 'Live',
           tabBarIcon: () => (
             <View>
-              <Ionicons size={25} name={'md-contact'} />
+              <Ionicons size={25} name={'md-contact'} color={'white'} />
             </View>
           ),
         }}
