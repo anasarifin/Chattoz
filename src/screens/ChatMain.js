@@ -12,6 +12,7 @@ class ChatMain extends React.Component {
     this.state = {
       messages: [],
       sender: 'yuna',
+      receiver: 'john',
     };
   }
 
@@ -19,7 +20,7 @@ class ChatMain extends React.Component {
     app
       .firestore()
       .collection('chats')
-      .doc('yuna|steve')
+      .doc([this.state.sender, this.state.receiver].sort().join('|'))
       .collection('chat')
       .add({
         message: text,
