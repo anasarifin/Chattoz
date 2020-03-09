@@ -16,9 +16,31 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import app from '../configs/firebase';
+import {useSelector} from 'react-redux';
 
 const ChatList = props => {
-  const [friend, setFriend] = useState([1, 2, 3, 4, 5, 6]);
+  const [friend, setFriend] = useState([]);
+  const user = useSelector(state => state.user.user);
+
+  const getFriend = () => {
+    app
+      .firestore()
+      .collection('users')
+      .doc(user.username)
+      .collection('friends')
+      .onSnapshot(async snapshot => {
+        const final = [];
+        await snapshot.forEach(doc => {
+          final.push(doc.data());
+          // app
+          //   .firestore()
+          //   .collection('users')
+          //   .doc(doc.data().username)
+          //   .snapshot(doc2 => console.log(doc2));
+        });
+        setFriend(final);
+      });
+  };
 
   useEffect(() => console.log('OK bos !!!'), []);
 
@@ -37,7 +59,9 @@ const ChatList = props => {
         return (
           <TouchableOpacity
             key={i}
-            onPress={() => props.navigation.navigate('chat-main')}>
+            onPress={() =>
+              props.navigation.navigate('chat-main', {receiver: x.username})
+            }>
             <List>
               <ListItem avatar>
                 <Left>
@@ -46,7 +70,7 @@ const ChatList = props => {
                   />
                 </Left>
                 <Body>
-                  <Text>Kumar Pratiko</Text>
+                  <Text>{x.username}</Text>
                 </Body>
               </ListItem>
             </List>
@@ -54,7 +78,9 @@ const ChatList = props => {
         );
       })}
       <View style={styles.add}>
-        <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
+        <TouchableOpacity onPress={() => getFriend()}>
+          <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );

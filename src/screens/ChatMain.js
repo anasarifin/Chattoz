@@ -24,7 +24,10 @@ class ChatMain extends React.Component {
   };
 
   send = text => {
-    const merge = [this.props.user.user.username, this.state.receiver].sort();
+    const merge = [
+      this.props.user.user.username,
+      this.props.route.params.receiver,
+    ].sort();
     app
       .firestore()
       .collection('chats')
@@ -41,7 +44,7 @@ class ChatMain extends React.Component {
 
   getChat = () => {
     const username = this.props.user.user.username;
-    const merge = [username, this.state.receiver].sort();
+    const merge = [username, this.props.route.params.receiver].sort();
     app
       .firestore()
       .collection('chats')
@@ -52,7 +55,6 @@ class ChatMain extends React.Component {
         console.log(snapshot);
         const final = [];
         await snapshot.forEach(doc => {
-          console.log(doc.data());
           final.push({
             _id: 1,
             text: doc.data().message,
