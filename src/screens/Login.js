@@ -15,14 +15,18 @@ import {
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
+import {useDispatch} from 'react-redux';
+import {getUser} from '../redux/actions/user';
 
 const url = 'http://192.168.1.135:8888/api/v1/login';
+const urlUser = 'http://192.168.1.135:8888/api/v1/users/';
 
 const Login = props => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState('This is warning!');
   const [loading, setLoading] = useState('');
+  const dispatch = useDispatch();
 
   const login = () => {
     if (!username) {
@@ -41,6 +45,9 @@ const Login = props => {
         if (resolve.data.token) {
           AsyncStorage.setItem('token', resolve.data.token);
           props.navigation.dispatch(StackActions.replace('home'));
+          Axios.get(urlUser + username).then(resolve2 => {
+            dispatch(getUser(resolve2.data[0]));
+          });
         } else {
           setWarning(resolve.data.warning);
         }
@@ -93,7 +100,7 @@ const Login = props => {
         <TouchableOpacity>
           <Text
             style={styles.registerButton}
-            onPress={() => props.navigation.navigate('live')}>
+            onPress={() => props.navigation.navigate('register')}>
             Register
           </Text>
         </TouchableOpacity>

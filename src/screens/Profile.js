@@ -5,7 +5,6 @@ import {
   ToastAndroid,
   StyleSheet,
   TouchableOpacity,
-  Picker,
   StatusBar,
   Image,
   TextInput,
@@ -17,9 +16,9 @@ import ImagePicker from 'react-native-image-picker';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Kaede} from 'react-native-textinput-effects';
 import Geolocation from 'react-native-geolocation-service';
-import AsyncStorage from '@react-native-community/async-storage';
+import {useSelector} from 'react-redux';
+import {Picker} from 'native-base';
 
 import {
   Container,
@@ -42,12 +41,13 @@ const Profile = props => {
     address: 'xxxxxxxxxxxxxxx',
     gender: 'xxxxx',
   });
-  const [name, setName] = useState(dummy.name);
-  const [email, setEmail] = useState(dummy.email);
-  const [phone, setPhone] = useState(dummy.phone);
-  const [address, setAddress] = useState(dummy.address);
-  const [birth, setBirth] = useState(dummy.birth);
-  const [gender, setGender] = useState(dummy.gender);
+  const user = useSelector(state => state.user.user);
+  const [name, setName] = useState(user.name);
+  const [email, setEmail] = useState(user.email);
+  const [phone, setPhone] = useState(user.phone);
+  const [address, setAddress] = useState(user.address);
+  const [birth, setBirth] = useState(user.birth);
+  const [gender, setGender] = useState(user.gender);
   const [location, setLocation] = useState('');
 
   const postData = () => {
@@ -127,45 +127,46 @@ const Profile = props => {
           <Item stackedLabel>
             <Label style={styles.label}>Username</Label>
             <Input
-              defaultValue={dummy.name}
+              defaultValue={name}
               onChange={e => setName(e.nativeEvent.text)}
             />
           </Item>
           <Item stackedLabel>
             <Label style={styles.label}>Email</Label>
             <Input
-              defaultValue={dummy.email}
+              defaultValue={email}
               onChange={e => setEmail(e.nativeEvent.text)}
             />
           </Item>
           <Item stackedLabel>
             <Label style={styles.label}>Phone</Label>
             <Input
-              defaultValue={dummy.phone}
+              defaultValue={phone}
               onChange={e => setPhone(e.nativeEvent.text)}
             />
           </Item>
           <Item stackedLabel>
             <Label style={styles.label}>Address</Label>
             <Input
-              defaultValue={dummy.address}
+              defaultValue={address}
               onChange={e => setAddress(e.nativeEvent.text)}
             />
           </Item>
           <Item stackedLabel>
             <Label style={styles.label}>Birthdate</Label>
             <Input
-              defaultValue={dummy.birth}
+              defaultValue={birth}
               onChange={e => setBirth(e.nativeEvent.text)}
             />
           </Item>
-          <Item stackedLabel last>
-            <Label style={styles.label}>Gender</Label>
-            <Input
-              defaultValue={dummy.gender}
-              onChange={e => setGender(e.nativeEvent.text)}
-            />
-          </Item>
+          <Picker
+            iosHeader="Select one"
+            mode="dropdown"
+            selectedValue={gender}
+            onValueChange={value => setGender(value)}>
+            <Item label="Male" value="0" />
+            <Item label="Female" value="1" />
+          </Picker>
         </Form>
         {/* <Picker
             selectedValue={this.state.category}

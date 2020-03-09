@@ -12,15 +12,33 @@ import {
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
+import app from '../configs/firebase';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const url = 'http://100.24.32.116:9999/api/v1/login';
 
 const Register = props => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [warning, setWarning] = useState('This is warning!');
   const [loading, setLoading] = useState('');
+
+  const register = () => {
+    app
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        if (app.auth().currentUser != null) {
+          app
+            .auth()
+            .currentUser.updateProfile({
+              displayName: name,
+            })
+            .then(resolve => console.log(resolve));
+        }
+      });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,9 +52,15 @@ const Register = props => {
 
         <TextInput
           style={styles.inputText}
-          placeholder="Username"
+          placeholder="Email"
           placeholderTextColor="rgba(0,0,0,.5)"
-          onChange={e => setUsername(e.nativeEvent.text)}
+          onChange={e => setEmail(e.nativeEvent.text)}
+        />
+        <TextInput
+          style={styles.inputText}
+          placeholder="Name"
+          placeholderTextColor="rgba(0,0,0,.5)"
+          onChange={e => setName(e.nativeEvent.text)}
         />
         <TextInput
           style={styles.inputText}
@@ -45,10 +69,7 @@ const Register = props => {
           placeholderTextColor="rgba(0,0,0,.5)"
           onChange={e => setPassword(e.nativeEvent.text)}
         />
-        <TouchableOpacity
-          onPress={() =>
-            props.navigation.dispatch(StackActions.replace('home'))
-          }>
+        <TouchableOpacity onPress={() => register()}>
           <Text style={styles.loginButton}>Register</Text>
         </TouchableOpacity>
         {/* <ActivityIndicator

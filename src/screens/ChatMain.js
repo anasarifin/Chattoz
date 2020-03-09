@@ -3,6 +3,7 @@ import React from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
 import app from '../configs/firebase';
 import firebase from 'firebase';
+import {connect} from 'react-redux';
 
 // let itemsRef = db.ref('/chats');
 
@@ -11,51 +12,65 @@ class ChatMain extends React.Component {
     super();
     this.state = {
       messages: [],
-      sender: 'yuna',
-      receiver: 'john',
+      receiver: 'steve',
     };
   }
 
+  check = () => {
+    app
+      .firestore()
+      .collection('users')
+      .onSnapshot(snapshot => console.log(snapshot.data()));
+  };
+
   send = text => {
+    const merge = [this.props.user.user.username, this.state.receiver].sort();
     app
       .firestore()
       .collection('chats')
-      .doc([this.state.sender, this.state.receiver].sort().join('|'))
+      .doc(merge.join('|'))
       .collection('chat')
       .add({
         message: text,
-        sender: this.state.sender,
+        sender: this.props.user.user.username,
         time: firebase.firestore.Timestamp.fromDate(new Date()),
       })
       .then(resolve => console.log(resolve))
       .catch(reject => console.log(reject));
   };
 
-  componentDidMount() {
-    () => {
-      app
-        .firestore()
-        .collection('chats')
-        .doc('yuna|steve')
-        .collection('chat')
-        .onSnapshot(async snapshot => {
-          const final = [];
-          await snapshot.forEach(doc => {
-            final.push({
-              _id: 1,
-              text: doc.data().message,
-              createdAt: new Date(doc.data().time.toDate()),
-              user: {
-                _id: 1,
-                name: doc.data().sender,
-              },
-            });
-          });
-          this.setState({
-            messages: final,
+  getChat = () => {
+    const username = this.props.user.user.username;
+    const merge = [username, this.state.receiver].sort();
+    app
+      .firestore()
+      .collection('chats')
+      .doc(merge.join('|'))
+      .collection('chat')
+      .orderBy('time', 'desc')
+      .onSnapshot(async snapshot => {
+        console.log(snapshot);
+        const final = [];
+        await snapshot.forEach(doc => {
+          console.log(doc.data());
+          final.push({
+            _id: 1,
+            text: doc.data().message,
+            createdAt: new Date(doc.data().time.toDate()),
+            user: {
+              _id: doc.data().sender === username ? 1 : 2,
+              name: doc.data().sender,
+            },
           });
         });
-    };
+        this.setState({
+          messages: final,
+        });
+      });
+  };
+
+  componentDidMount() {
+    this.getChat();
 
     // this.setState({
     //   messages: [
@@ -96,10 +111,16 @@ class ChatMain extends React.Component {
           _id: 1,
         }}
         alwaysShowSend={true}
-        onPressAvatar={x => console.log(x)}
+        onPressAvatar={x => this.check()}
       />
     );
   }
 }
 
-export default ChatMain;
+const mapStateToProps = state => {
+  return {
+    user: state.user,
+  };
+};
+
+export default connect(mapStateToProps)(ChatMain);
