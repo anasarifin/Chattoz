@@ -19,6 +19,7 @@ import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Kaede} from 'react-native-textinput-effects';
 import Geolocation from 'react-native-geolocation-service';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {
   Container,
@@ -201,7 +202,10 @@ const Profile = props => {
       />
       <Button
         title="Logout"
-        onPress={() => props.navigation.navigate('login', {noBack: true})}
+        onPress={() => {
+          AsyncStorage.removeItem('token');
+          props.navigation.navigate('login', {noBack: true});
+        }}
       />
     </SafeAreaView>
   );

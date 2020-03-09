@@ -14,15 +14,41 @@ import {
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
-// import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 
-const url = 'http://100.24.32.116:9999/api/v1/login';
+const url = 'http://192.168.1.135:8888/api/v1/login';
 
 const Login = props => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState('This is warning!');
   const [loading, setLoading] = useState('');
+
+  const login = () => {
+    if (!username) {
+      setWarning('Username is empty !');
+      return false;
+    }
+    if (!password) {
+      setWarning('Password is empty !');
+      return false;
+    }
+    Axios.post(url, {
+      username: username,
+      password: password,
+    })
+      .then(resolve => {
+        if (resolve.data.token) {
+          AsyncStorage.setItem('token', resolve.data.token);
+          props.navigation.dispatch(StackActions.replace('home'));
+        } else {
+          setWarning(resolve.data.warning);
+        }
+      })
+      .catch(reject => {
+        console.log(reject);
+      });
+  };
 
   useEffect(() => {
     if (props.route.params) {
@@ -53,10 +79,7 @@ const Login = props => {
           placeholderTextColor="rgba(0,0,0,.5)"
           onChange={e => setPassword(e.nativeEvent.text)}
         />
-        <TouchableOpacity
-          onPress={() =>
-            props.navigation.dispatch(StackActions.replace('home'))
-          }>
+        <TouchableOpacity onPress={() => login()}>
           <Text style={styles.loginButton}>Login</Text>
         </TouchableOpacity>
         {/* <ActivityIndicator
