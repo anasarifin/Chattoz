@@ -27,11 +27,7 @@ const App = () => {
         component={ChatList}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="chat-main"
-        component={ChatMain}
-        options={{headerTitle: props => <Text>shit man</Text>}}
-      />
+      <Stack.Screen name="chat-main" component={ChatMain} />
     </Stack.Navigator>
   );
 };

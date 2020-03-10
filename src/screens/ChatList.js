@@ -17,32 +17,63 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import app from '../configs/firebase';
 import {useSelector} from 'react-redux';
+import Axios from 'axios';
+
+const url = 'http://192.168.1.135:8888/api/v1/users/batch';
 
 const ChatList = props => {
   const [friend, setFriend] = useState([]);
   const user = useSelector(state => state.user.user);
 
-  const getFriend = () => {
+  function format(data) {
+    let word = '';
+    data.forEach((x, i) => {
+      if (i < data.length - 1) {
+        word += `"${x}",`;
+      } else {
+        word += `"${x}"`;
+      }
+    });
+    return `(${word})`;
+  }
+
+  const getFriend = async () => {
     app
       .firestore()
       .collection('users')
-      .doc(user.username)
+      .doc(await user.username)
       .collection('friends')
       .onSnapshot(async snapshot => {
-        const final = [];
+        const source = [];
         await snapshot.forEach(doc => {
-          final.push(doc.data());
-          // app
-          //   .firestore()
-          //   .collection('users')
-          //   .doc(doc.data().username)
-          //   .snapshot(doc2 => console.log(doc2));
+          if (doc) {
+            source.push(doc.data());
+          }
+          // if (doc) {
+          //   app
+          //     .firestore()
+          //     .collection('users')
+          //     .doc(doc.data().username)
+          //     .get()
+          //     .then(doc2 => {
+          //       console.log(doc2.data());
+          //       source.push(doc2.data());
+          //     });
+          // }
         });
-        setFriend(final);
+        console.log(source);
+        setFriend(source);
+        // Axios.post(url, {data: })
+        //   .then(resolve => {
+        //     console.log(resolve);
+        //   })
+        //   .catch(reject => console.log(reject));
       });
   };
 
-  useEffect(() => console.log('OK bos !!!'), []);
+  useEffect(() => {
+    getFriend();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

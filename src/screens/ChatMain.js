@@ -72,6 +72,9 @@ class ChatMain extends React.Component {
   };
 
   componentDidMount() {
+    this.props.navigation.setOptions({
+      title: this.props.route.params.receiver,
+    });
     this.getChat();
 
     // this.setState({
