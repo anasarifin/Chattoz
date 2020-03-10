@@ -4,6 +4,18 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import app from '../configs/firebase';
 import firebase from 'firebase';
 import {connect} from 'react-redux';
+import {
+  Container,
+  Header,
+  Left,
+  Body,
+  Right,
+  Button,
+  Icon,
+  Title,
+} from 'native-base';
+// import {SafeAreaView} from 'react-native-safe-area-context';
+import {StatusBar, SafeAreaView} from 'react-native';
 
 // let itemsRef = db.ref('/chats');
 
@@ -52,9 +64,9 @@ class ChatMain extends React.Component {
       .collection('chat')
       .orderBy('time', 'desc')
       .onSnapshot(async snapshot => {
-        console.log(snapshot);
         const final = [];
         await snapshot.forEach(doc => {
+          console.log(doc.data());
           final.push({
             _id: 1,
             text: doc.data().message,
@@ -109,15 +121,34 @@ class ChatMain extends React.Component {
 
   render() {
     return (
-      <GiftedChat
-        messages={this.state.messages}
-        onSend={messages => this.send(messages[0].text)}
-        user={{
-          _id: 1,
-        }}
-        alwaysShowSend={true}
-        onPressAvatar={x => this.check()}
-      />
+      <>
+        <Header
+          style={{backgroundColor: 'rgba(33,150,243,1)'}}
+          androidStatusBarColor="rgba(25,118,210,1)">
+          <Left>
+            <Button transparent onPress={() => this.props.navigation.goBack()}>
+              <Icon name="arrow-back" />
+            </Button>
+          </Left>
+          <Body>
+            <Title>{this.props.route.params.receiver}</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="menu" />
+            </Button>
+          </Right>
+        </Header>
+        <GiftedChat
+          messages={this.state.messages}
+          onSend={messages => this.send(messages[0].text)}
+          user={{
+            _id: 1,
+          }}
+          alwaysShowSend={true}
+          onPressAvatar={x => this.check()}
+        />
+      </>
     );
   }
 }

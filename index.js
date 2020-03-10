@@ -20,4 +20,5 @@ const Redux = () => {
   );
 };
 
+console.disableYellowBox = true;
 AppRegistry.registerComponent(appName, () => Redux);

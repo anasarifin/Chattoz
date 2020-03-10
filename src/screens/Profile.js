@@ -41,7 +41,8 @@ const Profile = props => {
     address: 'xxxxxxxxxxxxxxx',
     gender: 'xxxxx',
   });
-  const user = useSelector(state => state.user.user);
+  const userMe = useSelector(state => state.user.user);
+  const user = props.route.params ? props.route.params.data : userMe;
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone);

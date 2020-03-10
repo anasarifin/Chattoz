@@ -19,14 +19,10 @@ const App = () => {
 
   return (
     <Stack.Navigator
-      headerMode="screen"
+      headerMode="none"
       mode="modal"
       initialRouteName="chat-list">
-      <Stack.Screen
-        name="chat-list"
-        component={ChatList}
-        options={{headerShown: false}}
-      />
+      <Stack.Screen name="chat-list" component={ChatList} />
       <Stack.Screen name="chat-main" component={ChatMain} />
     </Stack.Navigator>
   );

@@ -28,7 +28,6 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <StatusBar translucent={true} backgroundColor="rgba(0,0,0,.4)" />
       <Stack.Navigator headerMode="none" initialRouteName="login">
         <Stack.Screen name="home" component={Home} />
         <Stack.Screen name="login" component={Login} />

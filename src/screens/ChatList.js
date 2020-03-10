@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, StatusBar} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {View, StyleSheet, SafeAreaView} from 'react-native';
+// import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Container,
   Header,
@@ -14,12 +14,13 @@ import {
   Text,
 } from 'native-base';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import app from '../configs/firebase';
 import {useSelector} from 'react-redux';
 import Axios from 'axios';
 
-const url = 'http://192.168.1.135:8888/api/v1/users/batch';
+const url = 'http://192.168.1.135:8888/api/v1/users/';
 
 const ChatList = props => {
   const [friend, setFriend] = useState([]);
@@ -71,6 +72,12 @@ const ChatList = props => {
       });
   };
 
+  const moveToProfile = username => {
+    Axios.get(url + username).then(resolve =>
+      props.navigation.navigate('profile', {data: resolve.data[0]}),
+    );
+  };
+
   useEffect(() => {
     getFriend();
   }, []);
@@ -101,7 +108,7 @@ const ChatList = props => {
                   />
                 </Left>
                 <Body>
-                  <Text>{x.username}</Text>
+                  <Text style={{fontSize: 22}}>{x.username}</Text>
                 </Body>
               </ListItem>
             </List>
