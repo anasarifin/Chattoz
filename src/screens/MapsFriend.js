@@ -8,35 +8,13 @@ import app from '../configs/firebase';
 
 // firebase.firestore.GeoPoint(latitude, longitude)
 
-const loop = source => {};
-
-const Maps = () => {
-  const [ready, setReady] = useState(false);
+const Maps = props => {
+  const [ready, setReady] = useState(true);
   const [maps2, setMaps] = useState([]);
   const [coordinate, setCoordinate] = useState({lat: 0, lng: 0});
   const [myLoc, setMyLoc] = useState({});
   const [container, setContainer] = useState([]);
   const user = useSelector(state => state.user.user);
-
-  const loop = source => {
-    return new Promise(resolve => {
-      let final2 = [];
-      source.forEach(x => {
-        app
-          .firestore()
-          .collection('users')
-          .doc(x)
-          .get()
-          .then(doc2 => {
-            final2.push({
-              latitude: doc2.data().location.O,
-              longitude: doc2.data().location.F,
-            });
-          });
-      });
-      resolve(final2);
-    });
-  };
 
   const getLocation = () => {
     app
@@ -71,22 +49,6 @@ const Maps = () => {
   };
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setCoordinate({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        setReady(true);
-      },
-      error => {
-        // See error code charts below.
-        console.log(error.code, error.message);
-        setReady(true);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
-
     getLocation();
   }, []);
 
@@ -98,17 +60,17 @@ const Maps = () => {
           <Button onPress={() => console.log(maps2)} title="Check" />
           <MapView
             initialRegion={{
-              latitude: coordinate.latitude,
-              longitude: coordinate.longitude,
-              latitudeDelta: 100,
-              longitudeDelta: 100,
+              latitude: props.route.params.data.latitude,
+              longitude: props.route.params.data.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
             }}
             zoomControlEnabled={true}
             showsMyLocationButton={true}
             showsUserLocation={true}
             showsCompass={true}
             style={{height: '100%', width: '100%'}}>
-            {[coordinate, ...maps2].map((map, index) => {
+            {[props.route.params.data, ...maps2].map((map, index) => {
               return (
                 <Marker
                   key={index}

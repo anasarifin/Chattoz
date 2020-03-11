@@ -158,6 +158,20 @@ class ChatMain extends React.Component {
                             });
                           },
                         );
+                      } else if (buttonIndex === 1) {
+                        app
+                          .firestore()
+                          .collection('users')
+                          .doc(this.props.route.params.receiver)
+                          .get()
+                          .then(resolve => {
+                            this.props.navigation.navigate('maps-friend', {
+                              data: {
+                                latitude: resolve.data().location.O,
+                                longitude: resolve.data().location.F,
+                              },
+                            });
+                          });
                       }
                     },
                   )

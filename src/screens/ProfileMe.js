@@ -33,6 +33,7 @@ import {
   Input,
   Label,
 } from 'native-base';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 const imgUrl = 'http://192.168.1.135:8888/public/img/';
 
@@ -47,14 +48,14 @@ const Profile = props => {
   });
   const userMe = useSelector(state => state.user.user);
   const user = props.route.params ? props.route.params.data : userMe;
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [phone, setPhone] = useState(user.phone);
-  const [address, setAddress] = useState(user.address);
-  const [birth, setBirth] = useState(user.birth);
-  const [gender, setGender] = useState(user.gender);
-  const [location, setLocation] = useState('');
-  const [modal, setModal] = useState(false);
+  // const [name, setName] = useState(user.name);
+  // const [email, setEmail] = useState(user.email);
+  // const [phone, setPhone] = useState(user.phone);
+  // const [address, setAddress] = useState(user.address);
+  // const [birth, setBirth] = useState(user.birth);
+  // const [gender, setGender] = useState(user.gender);
+  // const [location, setLocation] = useState('');
+  // const [modal, setModal] = useState(false);
 
   const postData = () => {
     // const formData = new FormData();
@@ -128,8 +129,17 @@ const Profile = props => {
   return (
     <SafeAreaView>
       <View style={styles.headerCon}>
-        <Image style={styles.profilePict} source={{uri: imgUrl + user.image}} />
-        <Text style={styles.profileName}>{user.name}</Text>
+        <View style={styles.profilePictCon}>
+          <Image
+            source={require('../img/profile.png')}
+            style={styles.profilePictDefault}
+          />
+          <Image
+            style={styles.profilePict}
+            source={{uri: imgUrl + user.image}}
+          />
+        </View>
+        <Text style={styles.profileName}>{user.name || user.username}</Text>
 
         <View style={styles.setting}>
           <Root>
@@ -227,11 +237,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  profilePict: {
+  profilePictCon: {
     borderRadius: 100,
     width: 150,
     height: 150,
     marginBottom: 20,
+  },
+  profilePictDefault: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 75,
+  },
+  profilePict: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 75,
+    position: 'absolute',
   },
   profileName: {
     fontSize: 40,

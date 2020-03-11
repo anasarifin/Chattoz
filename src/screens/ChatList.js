@@ -40,7 +40,6 @@ const ChatList = props => {
 
   const getFriend = async () => {
     const username = await user.username;
-    console.log(username);
     app
       .firestore()
       .collection('users')

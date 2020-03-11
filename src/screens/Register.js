@@ -9,35 +9,59 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  ToastAndroid,
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
 import app from '../configs/firebase';
 // import AsyncStorage from '@react-native-community/async-storage';
 
-const url = 'http://100.24.32.116:9999/api/v1/login';
+const url = 'http://192.168.1.135:8888/api/v1/register';
 
 const Register = props => {
-  const [email, setEmail] = useState('');
+  const [username, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [warning, setWarning] = useState('This is warning!');
+  const [rePassword, setRePassword] = useState('');
+  const [warning, setWarning] = useState('');
   const [loading, setLoading] = useState('');
 
   const register = () => {
-    app
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        if (app.auth().currentUser != null) {
-          app
-            .auth()
-            .currentUser.updateProfile({
-              displayName: name,
+    const regex = /[a-z0-9]/gi;
+    // console.log(regex.test(this.state.username));
+    if (
+      username &&
+      username.length >= 4 &&
+      username.length <= 12 &&
+      regex.test(username)
+    ) {
+      if (password && password.length >= 6 && regex.test(password)) {
+        if (password === rePassword) {
+          setLoading(true);
+          setWarning(null);
+          Axios.post(url, {username: username, password: password})
+            .then(resolve => {
+              setLoading(false);
+              if (resolve.data.insertId) {
+                ToastAndroid.show('Register success!', ToastAndroid.SHORT);
+                props.navigation.navigate('login');
+              } else if (resolve.data.warning) {
+                setWarning(resolve.data.warning);
+              }
             })
-            .then(resolve => console.log(resolve));
+            .catch(reject => console.log(reject));
+        } else {
+          setWarning('Re-type password must same!');
         }
-      });
+      } else {
+        setWarning(
+          'Password must contain min 6 character and not include special char!',
+        );
+      }
+    } else {
+      setWarning(
+        'Username must contain 4 - 12 character and not include special char!',
+      );
+    }
   };
 
   return (
@@ -52,31 +76,31 @@ const Register = props => {
 
         <TextInput
           style={styles.inputText}
-          placeholder="Email"
+          placeholder="Username"
           placeholderTextColor="rgba(0,0,0,.5)"
           onChange={e => setEmail(e.nativeEvent.text)}
         />
         <TextInput
           style={styles.inputText}
-          placeholder="Name"
+          placeholder="Password"
           placeholderTextColor="rgba(0,0,0,.5)"
-          onChange={e => setName(e.nativeEvent.text)}
+          onChange={e => setPassword(e.nativeEvent.text)}
         />
         <TextInput
           style={styles.inputText}
-          placeholder="Password"
+          placeholder="Re-type Password"
           secureTextEntry={true}
           placeholderTextColor="rgba(0,0,0,.5)"
-          onChange={e => setPassword(e.nativeEvent.text)}
+          onChange={e => setRePassword(e.nativeEvent.text)}
         />
         <TouchableOpacity onPress={() => register()}>
           <Text style={styles.loginButton}>Register</Text>
         </TouchableOpacity>
-        {/* <ActivityIndicator
-          style={this.state.loading ? styles.loadingOn : styles.loading}
+        <ActivityIndicator
+          style={loading ? styles.loadingOn : styles.loading}
           color="rgba(30,90,255,.7)"
           size="large"
-        /> */}
+        />
       </View>
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account?</Text>

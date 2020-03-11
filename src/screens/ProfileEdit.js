@@ -32,7 +32,7 @@ import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import Geolocation from 'react-native-geolocation-service';
 import {useSelector, useDispatch} from 'react-redux';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {getUser} from '../redux/actions/user';
 
 const url = 'http://192.168.1.135:8888/api/v1/users/';
@@ -47,24 +47,38 @@ const Profile = props => {
   const [address, setAddress] = useState(user.address);
   const [birth, setBirth] = useState(user.birth);
   const [gender, setGender] = useState(user.gender);
-  const [show, setShow] = useState(false);
-  const [date, setDate] = useState(new Date(birth));
+  const [birthString, setBirthString] = useState('');
   const [image, setImage] = useState(false);
+  const [modal, setModal] = useState(false);
   const dispatch = useDispatch();
 
-  const postData = async () => {
+  const postData = () => {
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('phone', phone);
-    formData.append('address', address);
-    formData.append('birth', birth);
-    formData.append('gender', gender);
-    formData.append('image', {
-      uri: image.uri,
-      type: image.type,
-      name: image.fileName,
-    });
+    if (name) {
+      formData.append('name', name);
+    }
+    if (email) {
+      formData.append('email', email);
+    }
+    if (phone) {
+      formData.append('phone', phone);
+    }
+    if (address) {
+      formData.append('address', address);
+    }
+    if (birth) {
+      formData.append('birth', birth);
+    }
+    if (gender) {
+      formData.append('gender', gender);
+    }
+    if (image) {
+      formData.append('image', {
+        uri: image.uri,
+        type: image.type,
+        name: image.fileName,
+      });
+    }
     Axios.patch(url + user.username, formData, {
       headers: {
         usertoken: AsyncStorage.getItem('token'),
@@ -75,7 +89,7 @@ const Profile = props => {
         Axios.get(url + user.username).then(resolve => {
           dispatch(getUser(resolve.data[0]));
           ToastAndroid.show('Edit success!', ToastAndroid.SHORT);
-          props.navigation.navigate('profile');
+          props.navigation.navigate('profile-me');
         });
         // this.setState({
         //   name: '',
@@ -90,6 +104,16 @@ const Profile = props => {
         ToastAndroid.show('Adding failed!', ToastAndroid.SHORT);
         console.log(reject);
       });
+  };
+
+  const setDate = e => {
+    const dateSet = `${new Date(e).getFullYear()}-${new Date(e).getMonth() +
+      1}-${new Date(e).getDate()}`;
+    const dateSet2 = `${new Date(e).getDate()}-${new Date(e).getMonth() +
+      1}-${new Date(e).getFullYear()}`;
+    setModal(false);
+    setBirth(dateSet);
+    setBirthString(dateSet2);
   };
 
   const picker = async () => {
@@ -126,36 +150,49 @@ const Profile = props => {
         <Body>
           <Title>Edit Profile</Title>
         </Body>
-        <Right />
+        <Right>
+          <Text style={styles.save} onPress={postData}>
+            SAVE
+          </Text>
+        </Right>
       </Header>
       <View>
         <Form style={{alignItems: 'center'}}>
-          <Image
-            source={{uri: image ? image.uri : imgUrl + user.image}}
-            style={styles.image}
-          />
-          <Item stackedLabel>
-            <Label style={styles.label}>Username</Label>
+          <TouchableOpacity
+            style={styles.imageCon}
+            onPress={picker}
+            activeOpacity={1}>
+            <Image
+              source={require('../img/profile.png')}
+              style={styles.imageDefault}
+            />
+            <Image
+              source={{uri: image ? image.uri : imgUrl + user.image}}
+              style={styles.image}
+            />
+          </TouchableOpacity>
+          <Item stackedLabel style={styles.item}>
+            <Label style={styles.label}>Name</Label>
             <Input
               defaultValue={name}
               onChange={e => setName(e.nativeEvent.text)}
             />
           </Item>
-          <Item stackedLabel>
+          <Item stackedLabel style={styles.item}>
             <Label style={styles.label}>Email</Label>
             <Input
               defaultValue={email}
               onChange={e => setEmail(e.nativeEvent.text)}
             />
           </Item>
-          <Item stackedLabel>
+          <Item stackedLabel style={styles.item}>
             <Label style={styles.label}>Phone</Label>
             <Input
               defaultValue={phone}
               onChange={e => setPhone(e.nativeEvent.text)}
             />
           </Item>
-          <Item stackedLabel>
+          <Item stackedLabel style={styles.item}>
             <Label style={styles.label}>Address</Label>
             <Input
               defaultValue={address}
@@ -163,80 +200,58 @@ const Profile = props => {
             />
           </Item>
           <Picker
-            style={{width: '70%', marginTop: 10}}
+            style={{width: '70%', marginBottom: 10}}
             iosHeader="Select one"
             mode="dropdown"
-            selectedValue={user.gender}
+            selectedValue={gender || user.gender}
             onValueChange={value => setGender(value)}>
             <Item label="Male" value={0} />
             <Item label="Female" value={1} />
           </Picker>
           <Button
-            title="Date"
-            onPress={async () => {
-              if (show) {
-                await setShow(false);
-                setShow(true);
-              } else {
-                setShow(true);
-              }
-            }}
+            title={birthString || 'Birthdate'}
+            onPress={() => setModal(true)}
           />
-          {show && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              timeZoneOffsetInMinutes={0}
-              value={date || new Date(birth)}
-              mode={'data'}
-              is24Hour={true}
-              display="default"
-              onChange={e => {
-                setDate(e.nativeEvent.timestamp);
-                console.log(e.nativeEvent.timestamp);
-                console.log(new Date(e.nativeEvent.timestamp).slice(0, 10));
-              }}
-            />
-          )}
+          <DateTimePickerModal
+            isVisible={modal}
+            mode="date"
+            onConfirm={e => {
+              setDate(e);
+            }}
+            onCancel={() => setModal(false)}
+          />
         </Form>
-        {/* <Picker
-            selectedValue={this.state.category}
-            style={styles.picker}
-            onValueChange={value => this.setState({category: value})}>
-            {this.props.products.categoryList.map((item, index) => {
-              return (
-                <Picker.Item
-                  key={index}
-                  label={item.name}
-                  value={parseFloat(item.id)}
-                />
-              );
-            })}
-          </Picker> */}
-        <Button onPress={picker} title="Select Image" />
-        {/* <Image style={styles.preview} source={{uri: this.state.image.uri}} /> */}
       </View>
-      <Button
-        title="Change"
-        // onPress={this.postData}
-        onPress={() => {
-          postData();
-        }}
-      />
-      <Button
-        title="Logout"
-        onPress={() => {
-          console.log(user);
-        }}
-      />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  image: {
-    marginVertical: 15,
+  imageCon: {
+    marginTop: 40,
+    marginBottom: 20,
     width: 100,
     height: 100,
+    borderRadius: 50,
+  },
+  item: {
+    marginVertical: 15,
+  },
+  save: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  image: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: 50,
+  },
+  imageDefault: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 50,
   },
 });
 

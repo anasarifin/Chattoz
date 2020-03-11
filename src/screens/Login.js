@@ -24,7 +24,7 @@ const urlUser = 'http://192.168.1.135:8888/api/v1/users/';
 const Login = props => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [warning, setWarning] = useState('This is warning!');
+  const [warning, setWarning] = useState('');
   const [loading, setLoading] = useState('');
   const dispatch = useDispatch();
 
