@@ -39,12 +39,12 @@ const ChatList = props => {
   }
 
   const getFriend = async () => {
-    console.log(props.route.params);
-    console.log('wew');
+    const username = await user.username;
+    console.log(username);
     app
       .firestore()
       .collection('users')
-      .doc(await user.username)
+      .doc(username)
       .collection('friends')
       .onSnapshot(async snapshot => {
         const source = [];

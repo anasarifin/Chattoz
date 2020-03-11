@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {useDispatch} from 'react-redux';
 import Axios from 'axios';
 import {getUser} from './src/redux/actions/user';
+import jwt_decode from 'jwt-decode';
 
 const Stack = createStackNavigator();
 const url = 'http://192.168.1.135:8888/api/v1/users/';
@@ -35,8 +36,9 @@ const App = props => {
   const dispatch = useDispatch();
 
   const checkLogin = async () => {
-    if (await AsyncStorage.getItem('token')) {
-      Axios.get(url + 'yuna').then(resolve => {
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      Axios.get(url + jwt_decode(token).username).then(resolve => {
         dispatch(getUser(resolve.data[0]));
         setLogin('home');
         setReady(true);

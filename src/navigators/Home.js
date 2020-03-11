@@ -3,8 +3,7 @@ import {View, Text} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Chats from './Chats';
 import Maps from '../screens/Maps';
-import Profile from '../screens/Profile';
-import ProfileMe from '../screens/ProfileMe';
+import Profile from './Profile';
 import Live from '../screens/Live';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -67,9 +66,9 @@ const Home = () => {
           ),
         }}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="profileMe"
-        component={ProfileMe}
+        component={ProfileEdit}
         options={{
           title: 'Live',
           tabBarIcon: () => (
@@ -78,7 +77,7 @@ const Home = () => {
             </View>
           ),
         }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 };

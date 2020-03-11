@@ -37,16 +37,8 @@ import {
 const imgUrl = 'http://192.168.1.135:8888/public/img/';
 
 const Profile = props => {
-  const [dummy, setDummy] = useState({
-    name: 'xxxxx',
-    email: 'xxxx@email.com',
-    phone: '0193209209',
-    birth: '12-12-12',
-    address: 'xxxxxxxxxxxxxxx',
-    gender: 'xxxxx',
-  });
   const userMe = useSelector(state => state.user.user);
-  const user = props.route.params ? props.route.params.data : userMe;
+  const user = props.route.params.data;
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone);
@@ -56,125 +48,11 @@ const Profile = props => {
   const [location, setLocation] = useState('');
   const [modal, setModal] = useState(false);
 
-  const postData = () => {
-    // const formData = new FormData();
-    // formData.append('name', this.state.name);
-    // formData.append('description', this.state.description);
-    // formData.append('price', this.state.price);
-    // formData.append('stock', this.state.stock);
-    // formData.append('image', {
-    //   uri: this.state.image.uri,
-    //   type: this.state.image.type,
-    //   name: this.state.image.fileName,
-    // });
-    // formData.append('category_id', this.state.category);
-    // if (
-    //   !this.state.name ||
-    //   !this.state.description ||
-    //   !this.state.price ||
-    //   !this.state.stock
-    // ) {
-    //   ToastAndroid.show('Adding failed!', ToastAndroid.SHORT);
-    // }
-    Axios.post(url, formData, {
-      headers: {
-        usertoken: AsyncStorage.getItem('token'),
-      },
-    })
-      .then(() => {
-        // this.props.dispatch(
-        //   products('http://100.24.32.116:9999/api/v1/products?page=1'),
-        // );
-        ToastAndroid.show('Adding success!', ToastAndroid.SHORT);
-        this.props.navigation.navigate('Home');
-        this.setState({
-          name: '',
-          description: '',
-          price: '',
-          stock: '',
-          category: 0,
-          image: {uri: null, type: null, fileName: null},
-        });
-      })
-      .catch(reject => {
-        ToastAndroid.show('Adding failed!', ToastAndroid.SHORT);
-        console.log(reject);
-      });
-  };
-
-  const picker = async () => {
-    const options = {
-      title: 'Select Image',
-      takePhotoButtonTitle: 'Take photo from camera',
-      chooseFromLibraryButtonTitle: 'Choose photo from gallery',
-    };
-
-    ImagePicker.showImagePicker(options, response => {
-      // console.log('Response = ', response.uri);
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        this.setState({
-          image: response,
-        });
-      }
-    });
-  };
-
   return (
     <SafeAreaView>
       <View style={styles.headerCon}>
         <Image style={styles.profilePict} source={{uri: imgUrl + user.image}} />
         <Text style={styles.profileName}>{user.name}</Text>
-
-        <View style={styles.setting}>
-          <Root>
-            <MaterialComIcons
-              size={40}
-              name={'settings'}
-              color={'white'}
-              onPress={() =>
-                ActionSheet.show(
-                  {
-                    options: ['Edit Profile', 'Logout'],
-                    // title: 'Testing ActionSheet',
-                  },
-                  buttonIndex => {
-                    if (buttonIndex === 0) {
-                      props.navigation.navigate('profile-edit');
-                    } else if (buttonIndex === 1) {
-                      AsyncStorage.removeItem('token');
-                      props.navigation.navigate('login');
-                    }
-                  },
-                )
-              }
-            />
-          </Root>
-        </View>
-        {/* <MaterialComIcons
-          style={styles.setting}
-          size={36}
-          name={'settings'}
-          color={'white'}
-          onPress={() =>
-            ActionSheet.show(
-              {
-                options: ['Edit Profile', 'Logout'],
-                cancelButtonIndex: 1,
-                destructiveButtonIndex: 1,
-                title: 'Testing ActionSheet',
-              },
-              buttonIndex => {
-                console.log(buttonIndex);
-              },
-            )
-          }
-        /> */}
       </View>
       <View style={styles.bodyCon}>
         <View style={styles.body}>

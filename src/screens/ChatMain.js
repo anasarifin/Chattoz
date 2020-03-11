@@ -153,7 +153,7 @@ class ChatMain extends React.Component {
                       if (buttonIndex === 0) {
                         Axios.get(url + this.props.route.params.receiver).then(
                           resolve => {
-                            this.props.navigation.navigate('profile', {
+                            this.props.navigation.navigate('profile-friend', {
                               data: resolve.data[0],
                             });
                           },
