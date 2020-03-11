@@ -45,15 +45,15 @@ const Maps = () => {
       .doc(user.username)
       .collection('friends')
       .get()
-      .then(async snapshot => {
+      .then(snapshot => {
         let final = [];
-        await snapshot.forEach(doc => {
+        snapshot.forEach(doc => {
           if (doc) {
             final.push(doc.data().username);
           }
         });
         let final2 = [];
-        await final.forEach(x => {
+        final.forEach(x => {
           app
             .firestore()
             .collection('users')
@@ -67,11 +67,6 @@ const Maps = () => {
             });
         });
         setMaps(final2);
-        // Axios.post(url, {data: })
-        //   .then(resolve => {
-        //     console.log(resolve);
-        //   })
-        //   .catch(reject => console.log(reject));
       });
   };
 
@@ -117,10 +112,6 @@ const Maps = () => {
                 <Marker
                   key={index}
                   coordinate={map}
-                  // image={{
-                  //   uri:
-                  //     'https://s.kaskus.id/c320x320/user/avatar/2011/05/09/avatar2921735_40.gif',
-                  // }}
                   style={{width: 10, height: 10}}>
                   <Callout>
                     <Text>xxx</Text>

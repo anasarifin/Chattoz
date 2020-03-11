@@ -5,7 +5,7 @@ import app from '../configs/firebase';
 import firebase from 'firebase';
 import {connect} from 'react-redux';
 import {
-  Container,
+  Root,
   Header,
   Left,
   Body,
@@ -13,11 +13,15 @@ import {
   Button,
   Icon,
   Title,
+  ActionSheet,
 } from 'native-base';
 // import {SafeAreaView} from 'react-native-safe-area-context';
-import {StatusBar, SafeAreaView} from 'react-native';
+import {Text, StyleSheet} from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import Axios from 'axios';
 
 // let itemsRef = db.ref('/chats');
+const url = 'http://192.168.1.135:8888/api/v1/users/';
 
 class ChatMain extends React.Component {
   constructor() {
@@ -133,9 +137,33 @@ class ChatMain extends React.Component {
             <Title>{this.props.route.params.receiver}</Title>
           </Body>
           <Right>
-            <Button transparent>
-              <Icon name="menu" />
-            </Button>
+            <Root>
+              <Entypo
+                size={30}
+                name={'menu'}
+                color={'white'}
+                style={styles.menu}
+                onPress={() =>
+                  ActionSheet.show(
+                    {
+                      options: ['View Profile', 'View Location'],
+                      // title: 'Testing ActionSheet',
+                    },
+                    buttonIndex => {
+                      if (buttonIndex === 0) {
+                        Axios.get(url + this.props.route.params.receiver).then(
+                          resolve => {
+                            this.props.navigation.navigate('profile', {
+                              data: resolve.data[0],
+                            });
+                          },
+                        );
+                      }
+                    },
+                  )
+                }
+              />
+            </Root>
           </Right>
         </Header>
         <GiftedChat
@@ -151,6 +179,14 @@ class ChatMain extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  menu: {
+    position: 'absolute',
+    right: 0,
+    top: -15,
+  },
+});
 
 const mapStateToProps = state => {
   return {

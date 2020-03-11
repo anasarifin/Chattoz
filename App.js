@@ -41,6 +41,8 @@ const App = props => {
         setLogin('home');
         setReady(true);
       });
+    } else {
+      setReady(true);
     }
   };
 

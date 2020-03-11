@@ -137,7 +137,7 @@ const Profile = props => {
         <View style={styles.setting}>
           <Root>
             <MaterialComIcons
-              size={50}
+              size={40}
               name={'settings'}
               color={'white'}
               onPress={() =>
@@ -147,7 +147,12 @@ const Profile = props => {
                     // title: 'Testing ActionSheet',
                   },
                   buttonIndex => {
-                    console.log(buttonIndex);
+                    if (buttonIndex === 0) {
+                      console.log('satu');
+                    } else {
+                      AsyncStorage.removeItem('token');
+                      props.navigation.navigate('login');
+                    }
                   },
                 )
               }
@@ -227,12 +232,12 @@ const styles = StyleSheet.create({
   },
   profilePict: {
     borderRadius: 100,
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     marginBottom: 20,
   },
   profileName: {
-    fontSize: 50,
+    fontSize: 40,
     color: 'white',
   },
   setting: {
