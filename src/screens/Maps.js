@@ -8,35 +8,49 @@ import app from '../configs/firebase';
 
 // firebase.firestore.GeoPoint(latitude, longitude)
 
+const loop = source => {};
+
 const Maps = () => {
   const [ready, setReady] = useState(false);
   const [maps2, setMaps] = useState([]);
   const [coordinate, setCoordinate] = useState({lat: 0, lng: 0});
   const [cont, setCont] = useState([]);
+  const [container, setContainer] = useState([]);
   const user = useSelector(state => state.user.user);
 
-  const getLocation = async () => {
+  const loop = source => {
+    return new Promise(resolve => {
+      let final2 = [];
+      source.forEach(x => {
+        app
+          .firestore()
+          .collection('users')
+          .doc(x)
+          .get()
+          .then(doc2 => {
+            final2.push({
+              latitude: doc2.data().location.O,
+              longitude: doc2.data().location.F,
+            });
+          });
+      });
+      resolve(final2);
+    });
+  };
+
+  const getLocation = () => {
     app
       .firestore()
       .collection('users')
-      .doc(await user.username)
+      .doc(user.username)
       .collection('friends')
-      .onSnapshot(async snapshot => {
+      .get()
+      .then(async snapshot => {
         let final = [];
         await snapshot.forEach(doc => {
           if (doc) {
             final.push(doc.data().username);
           }
-          // if (doc) {
-          //   app
-          //     .firestore()
-          //     .collection('users')
-          //     .doc(doc.data().username)
-          //     .get()
-          //     .then(doc2 => {
-          //       setCont(...cont, doc2.data().location);
-          //     });
-          // }
         });
         let final2 = [];
         await final.forEach(x => {
@@ -46,11 +60,13 @@ const Maps = () => {
             .doc(x)
             .get()
             .then(doc2 => {
-              final2.push(doc2.data().location);
+              final2.push({
+                latitude: doc2.data().location.O,
+                longitude: doc2.data().location.F,
+              });
             });
         });
-        setReady(true);
-        setCont(final2);
+        setMaps(final2);
         // Axios.post(url, {data: })
         //   .then(resolve => {
         //     console.log(resolve);
@@ -60,21 +76,22 @@ const Maps = () => {
   };
 
   useEffect(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        setCoordinate({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setReady(true);
+      },
+      error => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+
     getLocation();
-    // Geolocation.getCurrentPosition(
-    //   position => {
-    //     setCoordinate({
-    //       lat: position.coords.latitude,
-    //       lng: position.coords.longitude,
-    //     });
-    //     setReady(true);
-    //   },
-    //   error => {
-    //     // See error code charts below.
-    //     console.log(error.code, error.message);
-    //   },
-    //   {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    // );
   }, []);
 
   return (
@@ -82,31 +99,28 @@ const Maps = () => {
       {ready ? (
         <>
           <StatusBar translucent={true} backgroundColor="rgba(0,0,0,.4)" />
-          <Button onPress={() => console.log(cont)} title="Check" />
+          <Button onPress={() => console.log(maps2)} title="Check" />
           <MapView
             initialRegion={{
               latitude: coordinate.lat,
               longitude: coordinate.lng,
-              latitudeDelta: 0.02,
-              longitudeDelta: 0.02,
+              latitudeDelta: 100,
+              longitudeDelta: 100,
             }}
             zoomControlEnabled={true}
             showsMyLocationButton={true}
             showsUserLocation={true}
             showsCompass={true}
-            style={{height: '100%', width: '100%'}}
-            onPress={e =>
-              setMaps([...maps2, {coordinate: e.nativeEvent.coordinate}])
-            }>
+            style={{height: '100%', width: '100%'}}>
             {maps2.map((map, index) => {
               return (
                 <Marker
                   key={index}
-                  coordinate={map.coordinate}
-                  image={{
-                    uri:
-                      'https://s.kaskus.id/c320x320/user/avatar/2011/05/09/avatar2921735_40.gif',
-                  }}
+                  coordinate={map}
+                  // image={{
+                  //   uri:
+                  //     'https://s.kaskus.id/c320x320/user/avatar/2011/05/09/avatar2921735_40.gif',
+                  // }}
                   style={{width: 10, height: 10}}>
                   <Callout>
                     <Text>xxx</Text>

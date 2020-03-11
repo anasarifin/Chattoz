@@ -41,12 +41,14 @@ const Login = props => {
       username: username,
       password: password,
     })
-      .then(resolve => {
+      .then(async resolve => {
         if (resolve.data.token) {
           AsyncStorage.setItem('token', resolve.data.token);
-          props.navigation.dispatch(StackActions.replace('home'));
           Axios.get(urlUser + username).then(resolve2 => {
             dispatch(getUser(resolve2.data[0]));
+            props.navigation.dispatch(
+              StackActions.replace('home', {username: username}),
+            );
           });
         } else {
           setWarning(resolve.data.warning);

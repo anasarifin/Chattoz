@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Chats from './Chats';
 import Maps from '../screens/Maps';
 import Profile from '../screens/Profile';
+import ProfileMe from '../screens/ProfileMe';
 import Live from '../screens/Live';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -67,8 +68,8 @@ const Home = () => {
         }}
       />
       <Stack.Screen
-        name="live"
-        component={Live}
+        name="profileMe"
+        component={ProfileMe}
         options={{
           title: 'Live',
           tabBarIcon: () => (

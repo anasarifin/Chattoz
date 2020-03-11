@@ -39,6 +39,8 @@ const ChatList = props => {
   }
 
   const getFriend = async () => {
+    console.log(props.route.params);
+    console.log('wew');
     app
       .firestore()
       .collection('users')
@@ -50,6 +52,7 @@ const ChatList = props => {
           if (doc) {
             source.push(doc.data());
           }
+
           // if (doc) {
           //   app
           //     .firestore()
@@ -62,7 +65,6 @@ const ChatList = props => {
           //     });
           // }
         });
-        console.log(source);
         setFriend(source);
         // Axios.post(url, {data: })
         //   .then(resolve => {

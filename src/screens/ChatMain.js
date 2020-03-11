@@ -66,7 +66,6 @@ class ChatMain extends React.Component {
       .onSnapshot(async snapshot => {
         const final = [];
         await snapshot.forEach(doc => {
-          console.log(doc.data());
           final.push({
             _id: 1,
             text: doc.data().message,
