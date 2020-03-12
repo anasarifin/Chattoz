@@ -11,24 +11,52 @@ import {
   ActivityIndicator,
   Alert,
   BackHandler,
+  SectionList,
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useDispatch} from 'react-redux';
 import {getUser} from '../redux/actions/user';
+import {getFriend} from '../redux/actions/user';
+import app from '../configs/firebase';
 
 const url = 'http://192.168.1.135:8888/api/v1/login';
 const urlUser = 'http://192.168.1.135:8888/api/v1/users/';
+const urlBatch = 'http://192.168.1.135:8888/api/v1/users/batch';
 
 const Login = props => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState('');
   const [loading, setLoading] = useState('');
+  const [list, setList] = useState(false);
   const dispatch = useDispatch();
 
-  const login = () => {
+  const getFriendList = user => {
+    app
+      .firestore()
+      .collection('users')
+      .doc(user)
+      .collection('friends')
+      .get()
+      .then(async snapshot => {
+        const source = [];
+        await snapshot.forEach(doc => {
+          if (doc) {
+            source.push(doc.id);
+          }
+        });
+        if (source.length > 0) {
+          dispatch(getFriend(source));
+          props.navigation.dispatch(
+            StackActions.replace('home', {username: username}),
+          );
+        }
+      });
+  };
+
+  const login = async () => {
     if (!username) {
       setWarning('Username is empty !');
       return false;
@@ -46,9 +74,7 @@ const Login = props => {
           AsyncStorage.setItem('token', resolve.data.token);
           Axios.get(urlUser + username).then(resolve2 => {
             dispatch(getUser(resolve2.data[0]));
-            props.navigation.dispatch(
-              StackActions.replace('home', {username: username}),
-            );
+            getFriendList(username);
           });
         } else {
           setWarning(resolve.data.warning);
@@ -114,7 +140,7 @@ const Login = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'salmon',
+    backgroundColor: 'rgba(33,150,243,1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -147,7 +173,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     borderRadius: 20,
-    backgroundColor: 'rgba(30,90,255,.7)',
+    backgroundColor: 'rgba(30,90,255,1)',
     width: 350,
     marginVertical: 10,
     paddingHorizontal: 20,

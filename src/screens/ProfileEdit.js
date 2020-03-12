@@ -34,6 +34,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {useSelector, useDispatch} from 'react-redux';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {getUser} from '../redux/actions/user';
+import app from '../configs/firebase';
 
 const url = 'http://192.168.1.135:8888/api/v1/users/';
 const imgUrl = 'http://192.168.1.135:8888/public/img/';
@@ -85,11 +86,21 @@ const Profile = props => {
       },
     })
       .then(x => {
-        console.log(x);
+        console.log(image);
         Axios.get(url + user.username).then(resolve => {
           dispatch(getUser(resolve.data[0]));
           ToastAndroid.show('Edit success!', ToastAndroid.SHORT);
           props.navigation.navigate('profile-me');
+          app
+            .firestore()
+            .collection('users')
+            .doc(user.username)
+            .update({
+              name: name || '',
+              image: image
+                ? new Date().toISOString().replace(/:/g, '-') + image.fileName
+                : user.image,
+            });
         });
         // this.setState({
         //   name: '',

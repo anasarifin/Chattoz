@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {StatusBar, Button, Text, Image, ActivityIndicator} from 'react-native';
+import {
+  StatusBar,
+  Button,
+  Text,
+  Image,
+  ActivityIndicator,
+  SectionList,
+} from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import {useSelector} from 'react-redux';
@@ -8,65 +15,27 @@ import app from '../configs/firebase';
 
 // firebase.firestore.GeoPoint(latitude, longitude)
 
-const loop = source => {};
-
-const Maps = () => {
+const MapsPage = () => {
   const [ready, setReady] = useState(false);
-  const [maps2, setMaps] = useState([]);
+  const [maps, setMaps] = useState([]);
+  const [name, setFinal] = useState(['steve', 'paul']);
   const [coordinate, setCoordinate] = useState({lat: 0, lng: 0});
-  const [myLoc, setMyLoc] = useState({});
-  const [container, setContainer] = useState([]);
-  const user = useSelector(state => state.user.user);
-
-  const loop = source => {
-    return new Promise(resolve => {
-      let final2 = [];
-      source.forEach(x => {
-        app
-          .firestore()
-          .collection('users')
-          .doc(x)
-          .get()
-          .then(doc2 => {
-            final2.push({
-              latitude: doc2.data().location.O,
-              longitude: doc2.data().location.F,
-            });
-          });
-      });
-      resolve(final2);
-    });
-  };
+  const friend = useSelector(state => state.user.friend);
 
   const getLocation = () => {
     app
       .firestore()
       .collection('users')
-      .doc(user.username)
-      .collection('friends')
-      .get()
-      .then(snapshot => {
+      .onSnapshot(snapshot => {
         let final = [];
         snapshot.forEach(doc => {
-          if (doc) {
-            final.push(doc.data().username);
+          if (friend && doc) {
+            if (friend.includes(doc.data().username) && doc.data().location) {
+              final.push(doc.data());
+            }
           }
         });
-        let final2 = [];
-        final.forEach(x => {
-          app
-            .firestore()
-            .collection('users')
-            .doc(x)
-            .get()
-            .then(doc2 => {
-              final2.push({
-                latitude: doc2.data().location.O,
-                longitude: doc2.data().location.F,
-              });
-            });
-        });
-        setMaps(final2);
+        setMaps(final);
       });
   };
 
@@ -74,8 +43,8 @@ const Maps = () => {
     Geolocation.getCurrentPosition(
       position => {
         setCoordinate({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
+          latitude: 0,
+          longitude: 0,
         });
         setReady(true);
       },
@@ -95,11 +64,11 @@ const Maps = () => {
       {ready ? (
         <>
           <StatusBar translucent={true} backgroundColor="rgba(0,0,0,.4)" />
-          <Button onPress={() => console.log(maps2)} title="Check" />
+          <Button onPress={() => console.log(maps)} title="Check" />
           <MapView
             initialRegion={{
-              latitude: coordinate.latitude,
-              longitude: coordinate.longitude,
+              latitude: 0,
+              longitude: 0,
               latitudeDelta: 100,
               longitudeDelta: 100,
             }}
@@ -108,11 +77,14 @@ const Maps = () => {
             showsUserLocation={true}
             showsCompass={true}
             style={{height: '100%', width: '100%'}}>
-            {[coordinate, ...maps2].map((map, index) => {
+            {maps.map((map, index) => {
               return (
                 <Marker
                   key={index}
-                  coordinate={map}
+                  coordinate={{
+                    latitude: map.location.O,
+                    longitude: map.location.F,
+                  }}
                   style={{width: 10, height: 10}}>
                   <Callout>
                     <Text>xxx</Text>
@@ -129,4 +101,4 @@ const Maps = () => {
   );
 };
 
-export default Maps;
+export default MapsPage;

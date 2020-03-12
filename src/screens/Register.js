@@ -44,6 +44,13 @@ const Register = props => {
               if (resolve.data.insertId) {
                 ToastAndroid.show('Register success!', ToastAndroid.SHORT);
                 props.navigation.navigate('login');
+                app
+                  .firestore()
+                  .collection('users')
+                  .doc(username)
+                  .set({
+                    username: username,
+                  });
               } else if (resolve.data.warning) {
                 setWarning(resolve.data.warning);
               }
@@ -83,6 +90,7 @@ const Register = props => {
         <TextInput
           style={styles.inputText}
           placeholder="Password"
+          secureTextEntry={true}
           placeholderTextColor="rgba(0,0,0,.5)"
           onChange={e => setPassword(e.nativeEvent.text)}
         />
@@ -119,7 +127,7 @@ const Register = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'salmon',
+    backgroundColor: 'rgba(33,150,243,1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -152,7 +160,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     borderRadius: 20,
-    backgroundColor: 'rgba(30,90,255,.7)',
+    backgroundColor: 'rgba(30,90,255,1)',
     width: 350,
     marginVertical: 10,
     paddingHorizontal: 20,

@@ -17,8 +17,9 @@ import {decode, encode} from 'base-64';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useDispatch} from 'react-redux';
 import Axios from 'axios';
-import {getUser} from './src/redux/actions/user';
+import {getUser, getFriend} from './src/redux/actions/user';
 import jwt_decode from 'jwt-decode';
+import app from './src/configs/firebase';
 
 const Stack = createStackNavigator();
 const url = 'http://192.168.1.135:8888/api/v1/users/';
@@ -35,13 +36,35 @@ const App = props => {
   const [ready, setReady] = useState(false);
   const dispatch = useDispatch();
 
+  const getFriendList = user => {
+    app
+      .firestore()
+      .collection('users')
+      .doc(user)
+      .collection('friends')
+      .get()
+      .then(async snapshot => {
+        const source = [];
+        await snapshot.forEach(doc => {
+          if (doc) {
+            source.push(doc.id);
+          }
+        });
+        if (source.length > 0) {
+          dispatch(getFriend(source));
+          setReady(true);
+        }
+      });
+  };
+
   const checkLogin = async () => {
     const token = await AsyncStorage.getItem('token');
+    const username = jwt_decode(token).username;
     if (token) {
-      Axios.get(url + jwt_decode(token).username).then(resolve => {
+      Axios.get(url + username).then(async resolve => {
+        getFriendList(username);
         dispatch(getUser(resolve.data[0]));
         setLogin('home');
-        setReady(true);
       });
     } else {
       setReady(true);

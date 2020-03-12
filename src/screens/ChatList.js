@@ -10,8 +10,10 @@ import {
   Left,
   Body,
   Right,
+  Button,
   Thumbnail,
   Text,
+  Modal,
 } from 'native-base';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -21,62 +23,35 @@ import {useSelector} from 'react-redux';
 import Axios from 'axios';
 
 const url = 'http://192.168.1.135:8888/api/v1/users/';
+const imgUrl = 'http://192.168.1.135:8888/public/img/';
 
 const ChatList = props => {
-  const [friend, setFriend] = useState([]);
+  const [friends, setFriends] = useState([]);
+  const [search, setSearch] = useState('');
+  const [modal, setModal] = useState(false);
   const user = useSelector(state => state.user.user);
-
-  function format(data) {
-    let word = '';
-    data.forEach((x, i) => {
-      if (i < data.length - 1) {
-        word += `"${x}",`;
-      } else {
-        word += `"${x}"`;
-      }
-    });
-    return `(${word})`;
-  }
+  const friend = useSelector(state => state.user.friend);
 
   const getFriend = async () => {
-    const username = await user.username;
     app
       .firestore()
       .collection('users')
-      .doc(username)
-      .collection('friends')
-      .onSnapshot(async snapshot => {
-        const source = [];
-        await snapshot.forEach(doc => {
-          if (doc) {
-            source.push(doc.data());
+      .onSnapshot(snapshot => {
+        let final = [];
+        snapshot.forEach(doc => {
+          if (friend) {
+            if (friend.includes(doc.data().username)) {
+              final.push(doc.data());
+            }
           }
-
-          // if (doc) {
-          //   app
-          //     .firestore()
-          //     .collection('users')
-          //     .doc(doc.data().username)
-          //     .get()
-          //     .then(doc2 => {
-          //       console.log(doc2.data());
-          //       source.push(doc2.data());
-          //     });
-          // }
         });
-        setFriend(source);
+        setFriends(final);
         // Axios.post(url, {data: })
         //   .then(resolve => {
         //     console.log(resolve);
         //   })
         //   .catch(reject => console.log(reject));
       });
-  };
-
-  const moveToProfile = username => {
-    Axios.get(url + username).then(resolve =>
-      props.navigation.navigate('profile', {data: resolve.data[0]}),
-    );
   };
 
   useEffect(() => {
@@ -94,30 +69,33 @@ const ChatList = props => {
         </Body>
         <Right style={{flex: 1}} />
       </Header>
-      {friend.map((x, i) => {
+      {friends.map((x, i) => {
         return (
           <TouchableOpacity
             key={i}
             onPress={() =>
-              props.navigation.navigate('chat-main', {receiver: x.username})
+              props.navigation.navigate('chat-main', {
+                receiver: x.username,
+              })
             }>
             <List>
               <ListItem avatar>
                 <Left>
-                  <Thumbnail
-                    source={{uri: 'https://placeimg.com/140/140/any'}}
-                  />
+                  <Thumbnail source={{uri: imgUrl + x.image}} />
                 </Left>
                 <Body>
-                  <Text style={{fontSize: 22}}>{x.username}</Text>
+                  <Text style={{fontSize: 22}}>{x.name}</Text>
                 </Body>
+                <Right>
+                  <Text note>3:43 pm</Text>
+                </Right>
               </ListItem>
             </List>
           </TouchableOpacity>
         );
       })}
       <View style={styles.add}>
-        <TouchableOpacity onPress={() => getFriend()}>
+        <TouchableOpacity onPress={() => console.log(friends)}>
           <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
         </TouchableOpacity>
       </View>

@@ -1,6 +1,7 @@
 const initialValue = {
   complete: false,
   user: {},
+  friend: [],
 };
 
 const getUser = (state = initialValue, action) => {
@@ -9,6 +10,11 @@ const getUser = (state = initialValue, action) => {
       return {
         ...state,
         user: action.payload,
+      };
+    case 'GET_FRIEND':
+      return {
+        ...state,
+        friend: action.payload,
       };
     default:
       return state;

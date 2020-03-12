@@ -4,3 +4,9 @@ export const getUser = data => {
     payload: data,
   };
 };
+export const getFriend = data => {
+  return {
+    type: 'GET_FRIEND',
+    payload: data,
+  };
+};

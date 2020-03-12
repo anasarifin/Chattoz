@@ -28,7 +28,6 @@ class ChatMain extends React.Component {
     super();
     this.state = {
       messages: [],
-      receiver: 'steve',
     };
   }
 
@@ -88,7 +87,7 @@ class ChatMain extends React.Component {
 
   componentDidMount() {
     this.props.navigation.setOptions({
-      title: this.props.route.params.receiver,
+      title: this.props.route.params.name,
     });
     this.getChat();
 

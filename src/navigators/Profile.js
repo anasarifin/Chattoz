@@ -16,12 +16,6 @@ import ProfileFriend from '../screens/ProfileFriend';
 const Stack = createStackNavigator();
 
 const Profile = props => {
-  useEffect(() => {
-    if (props.route.params) {
-      console.log(props.route.params.data);
-    }
-  }, []);
-
   return (
     <Stack.Navigator
       headerMode="none"
