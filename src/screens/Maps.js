@@ -5,7 +5,7 @@ import {
   Text,
   Image,
   ActivityIndicator,
-  SectionList,
+  View,
 } from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
@@ -13,7 +13,7 @@ import {useSelector} from 'react-redux';
 import firebase from 'firebase';
 import app from '../configs/firebase';
 
-// firebase.firestore.GeoPoint(latitude, longitude)
+const imgUrl = 'http://192.168.1.135:8888/public/img/';
 
 const MapsPage = () => {
   const [ready, setReady] = useState(false);
@@ -84,10 +84,17 @@ const MapsPage = () => {
                   coordinate={{
                     latitude: map.location.O,
                     longitude: map.location.F,
-                  }}
-                  style={{width: 10, height: 10}}>
+                  }}>
+                  <Image
+                    source={{uri: imgUrl + map.image}}
+                    style={{width: 50, height: 50, borderRadius: 200}}
+                    resizeMode="contain"
+                  />
                   <Callout>
-                    <Text>xxx</Text>
+                    <View style={{width: 100}}>
+                      <Image source={{uri: imgUrl + map.image}} />
+                      <Text>{map.name}</Text>
+                    </View>
                   </Callout>
                 </Marker>
               );
@@ -95,7 +102,9 @@ const MapsPage = () => {
           </MapView>
         </>
       ) : (
-        <ActivityIndicator />
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator />
+        </View>
       )}
     </>
   );

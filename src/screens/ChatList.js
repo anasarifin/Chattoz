@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, SafeAreaView} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 // import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   Container,
@@ -13,11 +19,9 @@ import {
   Button,
   Thumbnail,
   Text,
-  Modal,
 } from 'native-base';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import Entypo from 'react-native-vector-icons/Entypo';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import Modal from 'react-native-modal';
 import app from '../configs/firebase';
 import {useSelector} from 'react-redux';
 import Axios from 'axios';
@@ -28,7 +32,7 @@ const imgUrl = 'http://192.168.1.135:8888/public/img/';
 const ChatList = props => {
   const [friends, setFriends] = useState([]);
   const [search, setSearch] = useState('');
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(true);
   const user = useSelector(state => state.user.user);
   const friend = useSelector(state => state.user.friend);
 
@@ -84,10 +88,13 @@ const ChatList = props => {
                   <Thumbnail source={{uri: imgUrl + x.image}} />
                 </Left>
                 <Body>
-                  <Text style={{fontSize: 22}}>{x.name}</Text>
+                  <Text>{x.name}</Text>
+                  <Text note>
+                    Doing what you like will always keep you happy . .
+                  </Text>
                 </Body>
                 <Right>
-                  <Text note>3:43 pm</Text>
+                  <Text style={{color: 'gray'}}>3:43 pm</Text>
                 </Right>
               </ListItem>
             </List>
@@ -99,6 +106,18 @@ const ChatList = props => {
           <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
         </TouchableOpacity>
       </View>
+      <Modal isVisible={true}>
+        <View
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'white',
+            height: 100,
+            borderRadius: 5,
+          }}>
+          <TextInput placeholder="Search username here..." />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

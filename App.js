@@ -61,11 +61,17 @@ const App = props => {
     const token = await AsyncStorage.getItem('token');
     const username = jwt_decode(token).username;
     if (token) {
-      Axios.get(url + username).then(async resolve => {
-        getFriendList(username);
-        dispatch(getUser(resolve.data[0]));
-        setLogin('home');
-      });
+      Axios.get(url + username)
+        .then(async resolve => {
+          getFriendList(username);
+          dispatch(getUser(resolve.data[0]));
+          setLogin('home');
+        })
+        .catch(() => {
+          setTimeout(() => {
+            setLogin('login');
+          }, 20000);
+        });
     } else {
       setReady(true);
     }
@@ -89,7 +95,5 @@ const App = props => {
     </>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default App;

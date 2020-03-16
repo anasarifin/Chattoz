@@ -98,7 +98,7 @@ const Profile = props => {
             .update({
               name: name || '',
               image: image
-                ? new Date().toISOString().replace(/:/g, '-') + image.fileName
+                ? user.username + '_-_' + image.fileName
                 : user.image,
             });
         });
