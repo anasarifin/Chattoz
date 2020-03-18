@@ -16,7 +16,7 @@ import {StackActions} from '@react-navigation/native';
 import app from '../configs/firebase';
 // import AsyncStorage from '@react-native-community/async-storage';
 
-const url = 'http://192.168.1.135:8888/api/v1/register';
+const url = 'http://100.24.32.116:9999/api/v1/register';
 
 const Register = props => {
   const [username, setEmail] = useState('');
@@ -127,7 +127,7 @@ const Register = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'rgba(33,150,243,1)',
+    backgroundColor: '#ef5350',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     borderRadius: 20,
-    backgroundColor: 'rgba(30,90,255,1)',
+    backgroundColor: '#c62828',
     width: 350,
     marginVertical: 10,
     paddingHorizontal: 20,

@@ -21,9 +21,8 @@ import {getUser} from '../redux/actions/user';
 import {getFriend} from '../redux/actions/user';
 import app from '../configs/firebase';
 
-const url = 'http://192.168.1.135:8888/api/v1/login';
-const urlUser = 'http://192.168.1.135:8888/api/v1/users/';
-const urlBatch = 'http://192.168.1.135:8888/api/v1/users/batch';
+const url = 'http://100.24.32.116:9999/api/v1/login';
+const urlUser = 'http://100.24.32.116:9999/api/v1/users/';
 
 const Login = props => {
   const [username, setUsername] = useState('');
@@ -39,10 +38,9 @@ const Login = props => {
       .collection('users')
       .doc(user)
       .collection('friends')
-      .get()
-      .then(async snapshot => {
+      .onSnapshot(snapshot => {
         const source = [];
-        await snapshot.forEach(doc => {
+        snapshot.forEach(doc => {
           if (doc) {
             source.push(doc.id);
           }
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     borderRadius: 20,
-    backgroundColor: 'rgba(30,90,255,1)',
+    backgroundColor: '#1565c0',
     width: 350,
     marginVertical: 10,
     paddingHorizontal: 20,

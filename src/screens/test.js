@@ -1,15 +1,5 @@
-const datax = ['waw', 'wew', 'wow'];
+const wew = [{name: 'Alex'}, {name: 'Smith'}, {name: 'Joseph'}];
+const name = 'Joseph';
 
-function format(data) {
-  let word = '';
-  data.forEach((x, i) => {
-    if (i < data.length - 1) {
-      word += `'${x}',`;
-    } else {
-      word += `'${x}'`;
-    }
-  });
-  return `(${word})`;
-}
-
-console.log(format(datax));
+const test = wew.includes(name);
+console.log(test);

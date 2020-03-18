@@ -36,8 +36,8 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {getUser} from '../redux/actions/user';
 import app from '../configs/firebase';
 
-const url = 'http://192.168.1.135:8888/api/v1/users/';
-const imgUrl = 'http://192.168.1.135:8888/public/img/';
+const url = 'http://100.24.32.116:9999/api/v1/users/';
+const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const Profile = props => {
   // const userMe = useSelector(state => state.user.user);
@@ -68,7 +68,7 @@ const Profile = props => {
       formData.append('address', address);
     }
     if (birth) {
-      formData.append('birth', birth);
+      formData.append('birth', birth.slice(0, 10));
     }
     if (gender) {
       formData.append('gender', gender);

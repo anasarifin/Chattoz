@@ -17,12 +17,12 @@ import {decode, encode} from 'base-64';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useDispatch} from 'react-redux';
 import Axios from 'axios';
-import {getUser, getFriend} from './src/redux/actions/user';
+import {getUser, getFriend, getChat} from './src/redux/actions/user';
 import jwt_decode from 'jwt-decode';
 import app from './src/configs/firebase';
 
 const Stack = createStackNavigator();
-const url = 'http://192.168.1.135:8888/api/v1/users/';
+const url = 'http://100.24.32.116:9999/api/v1/users/';
 
 const App = props => {
   if (!global.btoa) {
@@ -42,10 +42,9 @@ const App = props => {
       .collection('users')
       .doc(user)
       .collection('friends')
-      .get()
-      .then(async snapshot => {
+      .onSnapshot(snapshot => {
         const source = [];
-        await snapshot.forEach(doc => {
+        snapshot.forEach(doc => {
           if (doc) {
             source.push(doc.id);
           }
@@ -53,14 +52,39 @@ const App = props => {
         if (source.length > 0) {
           dispatch(getFriend(source));
           setReady(true);
+        } else {
+          setReady(true);
         }
       });
   };
 
+  // const getChatList = user => {
+  //   app
+  //     .firestore()
+  //     .collection('users')
+  //     .doc(user)
+  //     .collection('chats')
+  //     .get()
+  //     .then(async snapshot => {
+  //       const source = [];
+  //       await snapshot.forEach(doc => {
+  //         if (doc) {
+  //           source.push({username: doc.id, ...doc.data()});
+  //         }
+  //       });
+  //       if (source.length > 0) {
+  //         dispatch(getChat(source));
+  //         setReady(true);
+  //       } else {
+  //         setReady(true);
+  //       }
+  //     });
+  // };
+
   const checkLogin = async () => {
     const token = await AsyncStorage.getItem('token');
-    const username = jwt_decode(token).username;
     if (token) {
+      const username = jwt_decode(token).username;
       Axios.get(url + username)
         .then(async resolve => {
           getFriendList(username);
@@ -90,7 +114,9 @@ const App = props => {
           </Stack.Navigator>
         </NavigationContainer>
       ) : (
-        <ActivityIndicator />
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <ActivityIndicator />
+        </View>
       )}
     </>
   );

@@ -21,7 +21,7 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import Axios from 'axios';
 
 // let itemsRef = db.ref('/chats');
-const url = 'http://192.168.1.135:8888/api/v1/users/';
+const url = 'http://100.24.32.116:9999/api/v1/users/';
 
 class ChatMain extends React.Component {
   constructor() {
@@ -39,10 +39,9 @@ class ChatMain extends React.Component {
   };
 
   send = text => {
-    const merge = [
-      this.props.user.user.username,
-      this.props.route.params.receiver,
-    ].sort();
+    const me = this.props.user.user.username;
+    const you = this.props.route.params.receiver;
+    const merge = [me, you].sort();
     app
       .firestore()
       .collection('chats')
@@ -50,11 +49,24 @@ class ChatMain extends React.Component {
       .collection('chat')
       .add({
         message: text,
-        sender: this.props.user.user.username,
+        sender: me,
         time: firebase.firestore.Timestamp.fromDate(new Date()),
       })
       .then(resolve => console.log(resolve))
       .catch(reject => console.log(reject));
+
+    // app
+    //   .firestore()
+    //   .collection('users')
+    //   .doc(you)
+    //   .collection('friends')
+    //   .doc(me)
+    //   .set({
+    //     last_message: text,
+    //     last_time: firebase.firestore.Timestamp.fromDate(new Date()),
+    //   })
+    //   .then(resolve => console.log(resolve))
+    //   .catch(reject => console.log(reject));
   };
 
   getChat = () => {

@@ -34,7 +34,7 @@ import {
   Label,
 } from 'native-base';
 
-const imgUrl = 'http://192.168.1.135:8888/public/img/';
+const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const Profile = props => {
   const userMe = useSelector(state => state.user.user);
@@ -51,7 +51,16 @@ const Profile = props => {
   return (
     <SafeAreaView>
       <View style={styles.headerCon}>
-        <Image style={styles.profilePict} source={{uri: imgUrl + user.image}} />
+        <View style={styles.profilePictCon}>
+          <Image
+            source={require('../img/profile.png')}
+            style={styles.profilePictDefault}
+          />
+          <Image
+            style={styles.profilePict}
+            source={{uri: imgUrl + user.image}}
+          />
+        </View>
         <Text style={styles.profileName}>{user.name}</Text>
       </View>
       <View style={styles.bodyCon}>
@@ -105,11 +114,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  profilePict: {
+  profilePictCon: {
     borderRadius: 100,
     width: 150,
     height: 150,
     marginBottom: 20,
+  },
+  profilePictDefault: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 75,
+  },
+  profilePict: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 75,
+    position: 'absolute',
   },
   profileName: {
     fontSize: 40,

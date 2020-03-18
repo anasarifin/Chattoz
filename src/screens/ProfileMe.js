@@ -35,7 +35,7 @@ import {
 } from 'native-base';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
-const imgUrl = 'http://192.168.1.135:8888/public/img/';
+const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const Profile = props => {
   const user = useSelector(state => state.user.user);
@@ -80,25 +80,6 @@ const Profile = props => {
             />
           </Root>
         </View>
-        {/* <MaterialComIcons
-          style={styles.setting}
-          size={36}
-          name={'settings'}
-          color={'white'}
-          onPress={() =>
-            ActionSheet.show(
-              {
-                options: ['Edit Profile', 'Logout'],
-                cancelButtonIndex: 1,
-                destructiveButtonIndex: 1,
-                title: 'Testing ActionSheet',
-              },
-              buttonIndex => {
-                console.log(buttonIndex);
-              },
-            )
-          }
-        /> */}
       </View>
       <View style={styles.bodyCon}>
         <View style={styles.body}>

@@ -2,6 +2,7 @@ const initialValue = {
   complete: false,
   user: {},
   friend: [],
+  chat: [],
 };
 
 const getUser = (state = initialValue, action) => {
@@ -15,6 +16,11 @@ const getUser = (state = initialValue, action) => {
       return {
         ...state,
         friend: action.payload,
+      };
+    case 'GET_CHAT':
+      return {
+        ...state,
+        chat: action.payload,
       };
     default:
       return state;

@@ -10,3 +10,9 @@ export const getFriend = data => {
     payload: data,
   };
 };
+export const getChat = data => {
+  return {
+    type: 'GET_CHAT',
+    payload: data,
+  };
+};

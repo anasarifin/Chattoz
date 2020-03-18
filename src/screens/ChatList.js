@@ -5,10 +5,11 @@ import {
   TextInput,
   SafeAreaView,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 // import {SafeAreaView} from 'react-native-safe-area-context';
 import {
-  Container,
+  Badge,
   Header,
   Title,
   List,
@@ -16,40 +17,43 @@ import {
   Left,
   Body,
   Right,
-  Button,
   Thumbnail,
   Text,
 } from 'native-base';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import Modal from 'react-native-modal';
 import app from '../configs/firebase';
 import {useSelector} from 'react-redux';
 import Axios from 'axios';
 
-const url = 'http://192.168.1.135:8888/api/v1/users/';
-const imgUrl = 'http://192.168.1.135:8888/public/img/';
+const url = 'http://100.24.32.116:9999/api/v1/users/';
+const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const ChatList = props => {
   const [friends, setFriends] = useState([]);
+  const [addFriends, setAddFriends] = useState([]);
   const [search, setSearch] = useState('');
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(false);
   const user = useSelector(state => state.user.user);
   const friend = useSelector(state => state.user.friend);
+  const chat = useSelector(state => state.user.chat);
 
   const getFriend = async () => {
     app
       .firestore()
       .collection('users')
       .onSnapshot(snapshot => {
-        let final = [];
+        let friendList = [];
         snapshot.forEach(doc => {
           if (friend) {
             if (friend.includes(doc.data().username)) {
-              final.push(doc.data());
+              friendList.push(doc.data());
             }
           }
         });
-        setFriends(final);
+        setFriends(friendList);
         // Axios.post(url, {data: })
         //   .then(resolve => {
         //     console.log(resolve);
@@ -58,8 +62,27 @@ const ChatList = props => {
       });
   };
 
+  const getAddFriend = () => {
+    app
+      .firestore()
+      .collection('users')
+      .doc(user.username)
+      .collection('request')
+      .onSnapshot(snapshot => {
+        let addFriendList = [];
+        snapshot.forEach(doc => {
+          addFriendList.push(doc.id);
+        });
+        setAddFriends(addFriendList);
+      });
+  };
+
   useEffect(() => {
     getFriend();
+  }, [friend]);
+
+  useEffect(() => {
+    getAddFriend();
   }, []);
 
   return (
@@ -67,55 +90,110 @@ const ChatList = props => {
       <Header
         style={{backgroundColor: 'rgba(33,150,243,1)'}}
         androidStatusBarColor="rgba(25,118,210,1)">
-        <Left style={{flex: 1}} />
         <Body style={{flex: 1}}>
-          <Title style={{alignSelf: 'center'}}>Messages</Title>
+          <Title style={{alignSelf: 'flex-start', marginLeft: 20}}>
+            Messages
+          </Title>
         </Body>
-        <Right style={{flex: 1}} />
-      </Header>
-      {friends.map((x, i) => {
-        return (
+        <Right>
           <TouchableOpacity
-            key={i}
+            style={{flexDirection: 'row', alignItems: 'center'}}
             onPress={() =>
-              props.navigation.navigate('chat-main', {
-                receiver: x.username,
+              props.navigation.navigate('chat-friend', {
+                data: addFriends,
               })
             }>
-            <List>
-              <ListItem avatar>
-                <Left>
-                  <Thumbnail source={{uri: imgUrl + x.image}} />
-                </Left>
-                <Body>
-                  <Text>{x.name}</Text>
-                  <Text note>
-                    Doing what you like will always keep you happy . .
-                  </Text>
-                </Body>
-                <Right>
-                  <Text style={{color: 'gray'}}>3:43 pm</Text>
-                </Right>
-              </ListItem>
-            </List>
+            <Ionicons
+              name="md-person-add"
+              size={24}
+              color="white"
+              style={{marginHorizontal: 10}}
+            />
+            {addFriends.length > 0 ? (
+              <Badge info>
+                <Text>{addFriends.length}</Text>
+              </Badge>
+            ) : (
+              <></>
+            )}
           </TouchableOpacity>
-        );
-      })}
+        </Right>
+      </Header>
+      <List>
+        {friends.map((x, i) => {
+          return (
+            <ListItem
+              avatar
+              onPress={() =>
+                props.navigation.navigate('chat-main', {
+                  receiver: x.username,
+                })
+              }>
+              <Left>
+                <Thumbnail source={{uri: imgUrl + x.image}} />
+              </Left>
+              <Body>
+                <Text>{x.name}</Text>
+                <Text note>Doing what you like will always keep you</Text>
+                <Text
+                  note
+                  style={{
+                    position: 'absolute',
+                    fontSize: 12,
+                    top: 15,
+                    right: 20,
+                  }}>
+                  4:12 PM
+                </Text>
+              </Body>
+            </ListItem>
+            // </TouchableOpacity>
+          );
+        })}
+      </List>
       <View style={styles.add}>
-        <TouchableOpacity onPress={() => console.log(friends)}>
+        <TouchableOpacity onPress={() => console.log(friend)}>
           <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
         </TouchableOpacity>
       </View>
-      <Modal isVisible={true}>
+
+      <Modal isVisible={modal} onBackButtonPress={() => setModal(false)}>
         <View
           style={{
-            alignItems: 'center',
+            paddingHorizontal: 10,
+            alignItems: 'flex-start',
             justifyContent: 'center',
             backgroundColor: 'white',
-            height: 100,
+            height: 80,
             borderRadius: 5,
           }}>
-          <TextInput placeholder="Search username here..." />
+          <TextInput
+            placeholder="Search username here..."
+            style={{fontSize: 24}}
+            onChange={e => setSearch(e.nativeEvent.text)}
+          />
+          <FontAwesome
+            name="search"
+            color="black"
+            size={26}
+            style={styles.icon}
+            onPress={() => {
+              app
+                .firestore()
+                .collection('users')
+                .doc(search)
+                .collection('request')
+                .doc(user.username)
+                .set({})
+                .then(() => {
+                  setModal(false);
+                  ToastAndroid.show(
+                    'Friend request has been send !',
+                    ToastAndroid.SHORT,
+                  );
+                });
+            }}
+          />
         </View>
       </Modal>
     </SafeAreaView>
@@ -141,6 +219,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 15,
     right: 20,
+  },
+  icon: {
+    position: 'absolute',
+    right: 15,
   },
 });
 

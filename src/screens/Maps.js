@@ -13,7 +13,7 @@ import {useSelector} from 'react-redux';
 import firebase from 'firebase';
 import app from '../configs/firebase';
 
-const imgUrl = 'http://192.168.1.135:8888/public/img/';
+const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const MapsPage = () => {
   const [ready, setReady] = useState(false);
@@ -21,6 +21,7 @@ const MapsPage = () => {
   const [name, setFinal] = useState(['steve', 'paul']);
   const [coordinate, setCoordinate] = useState({lat: 0, lng: 0});
   const friend = useSelector(state => state.user.friend);
+  const user = useSelector(state => state.user.user);
 
   const getLocation = () => {
     app
@@ -43,9 +44,21 @@ const MapsPage = () => {
     Geolocation.getCurrentPosition(
       position => {
         setCoordinate({
-          latitude: 0,
-          longitude: 0,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
         });
+        app
+          .firestore()
+          .collection('users')
+          .doc(user.username)
+          .update({
+            location: new firebase.firestore.GeoPoint(
+              position.coords.latitude,
+              position.coords.longitude,
+            ),
+          })
+          .then(resolve => console.log(resolve))
+          .catch(reject => console.log(reject));
         setReady(true);
       },
       error => {
@@ -67,10 +80,10 @@ const MapsPage = () => {
           <Button onPress={() => console.log(maps)} title="Check" />
           <MapView
             initialRegion={{
-              latitude: 0,
-              longitude: 0,
-              latitudeDelta: 100,
-              longitudeDelta: 100,
+              latitude: coordinate.latitude,
+              longitude: coordinate.longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
             }}
             zoomControlEnabled={true}
             showsMyLocationButton={true}
@@ -85,14 +98,18 @@ const MapsPage = () => {
                     latitude: map.location.O,
                     longitude: map.location.F,
                   }}>
-                  <Image
-                    source={{uri: imgUrl + map.image}}
-                    style={{width: 50, height: 50, borderRadius: 200}}
-                    resizeMode="contain"
-                  />
+                  {map.image ? (
+                    <Image
+                      source={{uri: imgUrl + map.image}}
+                      style={{width: 40, height: 40, borderRadius: 100}}
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <></>
+                  )}
+
                   <Callout>
                     <View style={{width: 100}}>
-                      <Image source={{uri: imgUrl + map.image}} />
                       <Text>{map.name}</Text>
                     </View>
                   </Callout>
