@@ -75,8 +75,7 @@ const Register = props => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="rgba(0,0,0,.3)" />
       <View style={styles.logoCon}>
-        {/* <Image source={require('../images/bar-logo.png')} style={styles.logo} /> */}
-        <Text>LiveChat App</Text>
+        <Image source={require('../img/logo2.png')} style={styles.logo} />
       </View>
       <View style={styles.textCon}>
         <Text style={styles.warning}>{warning}</Text>
@@ -127,7 +126,7 @@ const Register = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ef5350',
+    backgroundColor: '#b39ddb',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -144,10 +143,9 @@ const styles = StyleSheet.create({
     marginBottom: -200,
   },
   logo: {
-    width: 170,
-    height: 170,
+    width: 400,
+    height: 400,
     marginTop: -100,
-    marginRight: -12,
   },
   inputText: {
     borderRadius: 20,
@@ -160,7 +158,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     borderRadius: 20,
-    backgroundColor: '#c62828',
+    backgroundColor: '#7e57c2',
     width: 350,
     marginVertical: 10,
     paddingHorizontal: 20,
