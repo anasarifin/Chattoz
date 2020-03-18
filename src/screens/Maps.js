@@ -18,8 +18,7 @@ const imgUrl = 'http://100.24.32.116:9999/public/img/';
 const MapsPage = () => {
   const [ready, setReady] = useState(false);
   const [maps, setMaps] = useState([]);
-  const [name, setFinal] = useState(['steve', 'paul']);
-  const [coordinate, setCoordinate] = useState({lat: 0, lng: 0});
+  const [coordinate, setCoordinate] = useState(false);
   const friend = useSelector(state => state.user.friend);
   const user = useSelector(state => state.user.user);
 
@@ -76,47 +75,51 @@ const MapsPage = () => {
     <>
       {ready ? (
         <>
-          <StatusBar translucent={true} backgroundColor="rgba(0,0,0,.4)" />
-          <Button onPress={() => console.log(maps)} title="Check" />
-          <MapView
-            initialRegion={{
-              latitude: coordinate.latitude,
-              longitude: coordinate.longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            }}
-            zoomControlEnabled={true}
-            showsMyLocationButton={true}
-            showsUserLocation={true}
-            showsCompass={true}
-            style={{height: '100%', width: '100%'}}>
-            {maps.map((map, index) => {
-              return (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    latitude: map.location.O,
-                    longitude: map.location.F,
-                  }}>
-                  {map.image ? (
-                    <Image
-                      source={{uri: imgUrl + map.image}}
-                      style={{width: 40, height: 40, borderRadius: 100}}
-                      resizeMode="contain"
-                    />
-                  ) : (
-                    <></>
-                  )}
+          <StatusBar backgroundColor="rgba(25,118,210,1)" />
+          {/* <Button onPress={() => console.log(maps)} title="Check" /> */}
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <MapView
+              initialRegion={{
+                latitude: coordinate ? coordinate.latitude : 0,
+                longitude: coordinate ? coordinate.longitude : 0,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+              }}
+              zoomControlEnabled={true}
+              showsMyLocationButton={true}
+              showsUserLocation={true}
+              showsCompass={true}
+              style={{height: '100%', width: '100%'}}>
+              {maps.map((map, index) => {
+                console.log(map);
+                return (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      latitude: map.location.U || map.location.O,
+                      longitude: map.location.k || map.location.F,
+                    }}>
+                    {map.image ? (
+                      <Image
+                        source={{uri: imgUrl + map.image}}
+                        style={{width: 40, height: 40, borderRadius: 100}}
+                        resizeMode="contain"
+                      />
+                    ) : (
+                      <></>
+                    )}
 
-                  <Callout>
-                    <View style={{width: 100}}>
-                      <Text>{map.name}</Text>
-                    </View>
-                  </Callout>
-                </Marker>
-              );
-            })}
-          </MapView>
+                    <Callout>
+                      <View style={{width: 100}}>
+                        <Text>{map.name}</Text>
+                      </View>
+                    </Callout>
+                  </Marker>
+                );
+              })}
+            </MapView>
+          </View>
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

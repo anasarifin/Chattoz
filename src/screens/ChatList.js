@@ -152,7 +152,7 @@ const ChatList = props => {
         })}
       </List>
       <View style={styles.add}>
-        <TouchableOpacity onPress={() => console.log(friend)}>
+        <TouchableOpacity onPress={() => setModal(true)}>
           <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
         </TouchableOpacity>
       </View>

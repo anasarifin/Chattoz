@@ -11,12 +11,13 @@ import {
   ActivityIndicator,
   Alert,
   BackHandler,
-  SectionList,
+  Dimensions,
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {useDispatch} from 'react-redux';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 import {getUser} from '../redux/actions/user';
 import {getFriend} from '../redux/actions/user';
 import app from '../configs/firebase';
@@ -47,6 +48,7 @@ const Login = props => {
         });
         if (source.length > 0) {
           dispatch(getFriend(source));
+          setLoading(false);
           props.navigation.dispatch(
             StackActions.replace('home', {username: username}),
           );
@@ -63,6 +65,7 @@ const Login = props => {
       setWarning('Password is empty !');
       return false;
     }
+    setLoading(true);
     Axios.post(url, {
       username: username,
       password: password,
@@ -70,16 +73,18 @@ const Login = props => {
       .then(async resolve => {
         if (resolve.data.token) {
           AsyncStorage.setItem('token', resolve.data.token);
-          Axios.get(urlUser + username).then(resolve2 => {
-            dispatch(getUser(resolve2.data[0]));
+          Axios.get(urlUser + username).then(async resolve2 => {
+            await dispatch(getUser(resolve2.data[0]));
             getFriendList(username);
           });
         } else {
           setWarning(resolve.data.warning);
+          setLoading(false);
         }
       })
       .catch(reject => {
         console.log(reject);
+        setLoading(false);
       });
   };
 
@@ -91,7 +96,7 @@ const Login = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="rgba(0,0,0,.3)" />
+      <StatusBar backgroundColor="rgba(0,0,0,.3)" translucent={true} />
       <View style={styles.logoCon}>
         <Image source={require('../img/logo.png')} style={styles.logo} />
       </View>
@@ -111,8 +116,14 @@ const Login = props => {
           placeholderTextColor="rgba(0,0,0,.5)"
           onChange={e => setPassword(e.nativeEvent.text)}
         />
-        <TouchableOpacity onPress={() => login()}>
-          <Text style={styles.loginButton}>Login</Text>
+        <TouchableOpacity onPress={() => login()} style={{width: '100%'}}>
+          <View style={styles.loginButton}>
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text style={styles.login}>Login</Text>
+            )}
+          </View>
         </TouchableOpacity>
         {/* <ActivityIndicator
           style={this.state.loading ? styles.loadingOn : styles.loading}
@@ -144,6 +155,7 @@ const styles = StyleSheet.create({
   textCon: {
     marginTop: -60,
     flex: 1,
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -154,36 +166,43 @@ const styles = StyleSheet.create({
     marginBottom: -200,
   },
   logo: {
-    width: 400,
-    height: 400,
+    width: Dimensions.get('window').width / 1.2,
+    height: Dimensions.get('window').width / 1.2,
     marginTop: -100,
   },
   inputText: {
     borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,.5)',
-    width: 350,
+    width: '80%',
     marginVertical: 10,
     paddingHorizontal: 20,
-    fontSize: 20,
+    fontSize: RFPercentage(2.5),
     textAlign: 'center',
+  },
+  loginCon: {
+    width: '100%',
+    alignItems: 'center',
   },
   loginButton: {
     borderRadius: 20,
     backgroundColor: '#00695c',
-    width: 350,
+    width: '80%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginVertical: 10,
     paddingHorizontal: 20,
-    fontSize: 20,
-    textAlign: 'center',
-    lineHeight: 45,
     height: 45,
+  },
+  login: {
+    fontSize: RFPercentage(2.3),
     color: 'white',
   },
   warning: {
     marginTop: -40,
-    fontSize: 18,
+    fontSize: RFPercentage(2),
     fontWeight: 'bold',
-    color: 'red',
+    color: 'white',
     width: 380,
     marginBottom: 10,
     textAlign: 'center',
@@ -193,11 +212,11 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   footerText: {
-    fontSize: 20,
+    fontSize: RFPercentage(2.5),
   },
   registerButton: {
     marginLeft: 5,
-    fontSize: 20,
+    fontSize: RFPercentage(2.5),
     fontWeight: 'bold',
   },
   loading: {

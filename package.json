@@ -32,6 +32,7 @@
     "react-native-modal-datetime-picker": "^8.5.1",
     "react-native-popup-menu": "^0.15.7",
     "react-native-reanimated": "^1.7.0",
+    "react-native-responsive-fontsize": "^0.4.3",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.2.0",
     "react-native-textinput-effects": "^0.5.1",

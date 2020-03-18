@@ -10,10 +10,12 @@ import {
   View,
   ActivityIndicator,
   ToastAndroid,
+  Dimensions,
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
 import app from '../configs/firebase';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 // import AsyncStorage from '@react-native-community/async-storage';
 
 const url = 'http://100.24.32.116:9999/api/v1/register';
@@ -73,7 +75,7 @@ const Register = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="rgba(0,0,0,.3)" />
+      <StatusBar backgroundColor="rgba(0,0,0,.3)" translucent={true} />
       <View style={styles.logoCon}>
         <Image source={require('../img/logo2.png')} style={styles.logo} />
       </View>
@@ -100,14 +102,15 @@ const Register = props => {
           placeholderTextColor="rgba(0,0,0,.5)"
           onChange={e => setRePassword(e.nativeEvent.text)}
         />
-        <TouchableOpacity onPress={() => register()}>
-          <Text style={styles.loginButton}>Register</Text>
+        <TouchableOpacity onPress={() => register()} style={{width: '100%'}}>
+          <View style={styles.loginButton}>
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text style={styles.login}>Login</Text>
+            )}
+          </View>
         </TouchableOpacity>
-        <ActivityIndicator
-          style={loading ? styles.loadingOn : styles.loading}
-          color="rgba(30,90,255,.7)"
-          size="large"
-        />
       </View>
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account?</Text>
@@ -135,6 +138,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   logoCon: {
     flex: 1.5,
@@ -143,36 +147,43 @@ const styles = StyleSheet.create({
     marginBottom: -200,
   },
   logo: {
-    width: 400,
-    height: 400,
+    width: Dimensions.get('window').width / 1.2,
+    height: Dimensions.get('window').width / 1.2,
     marginTop: -100,
   },
   inputText: {
     borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,.5)',
-    width: 350,
+    width: '80%',
     marginVertical: 10,
     paddingHorizontal: 20,
-    fontSize: 20,
+    fontSize: RFPercentage(2.3),
     textAlign: 'center',
+  },
+  loginCon: {
+    width: '100%',
+    alignItems: 'center',
   },
   loginButton: {
     borderRadius: 20,
     backgroundColor: '#7e57c2',
-    width: 350,
+    width: '80%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginVertical: 10,
     paddingHorizontal: 20,
-    fontSize: 20,
-    textAlign: 'center',
-    lineHeight: 45,
     height: 45,
+  },
+  login: {
+    fontSize: RFPercentage(2.3),
     color: 'white',
   },
   warning: {
     marginTop: -40,
-    fontSize: 18,
+    fontSize: RFPercentage(2),
     fontWeight: 'bold',
-    color: 'red',
+    color: 'white',
     width: 380,
     marginBottom: 10,
     textAlign: 'center',
@@ -182,11 +193,11 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   footerText: {
-    fontSize: 20,
+    fontSize: RFPercentage(2.5),
   },
   registerButton: {
     marginLeft: 5,
-    fontSize: 20,
+    fontSize: RFPercentage(2.5),
     fontWeight: 'bold',
   },
   loading: {
