@@ -27,6 +27,7 @@ import Modal from 'react-native-modal';
 import app from '../configs/firebase';
 import {useSelector} from 'react-redux';
 import Axios from 'axios';
+import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
 
 const url = 'http://100.24.32.116:9999/api/v1/users/';
 const imgUrl = 'http://100.24.32.116:9999/public/img/';
@@ -83,7 +84,7 @@ const ChatList = props => {
 
   useEffect(() => {
     getAddFriend();
-  }, []);
+  }, [addFriends]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -173,7 +174,7 @@ const ChatList = props => {
           }}>
           <TextInput
             placeholder="Search username here..."
-            style={{fontSize: 24}}
+            style={{fontSize: RFPercentage(2.5)}}
             onChange={e => setSearch(e.nativeEvent.text)}
           />
           <FontAwesome

@@ -82,29 +82,29 @@ const ChatFriend = props => {
               <Right style={{flexDirection: 'row', paddingRight: 15}}>
                 <Text
                   style={{color: 'blue'}}
-                  onPress={async () => {
-                    await app
+                  onPress={() => {
+                    app
                       .firestore()
                       .collection('users')
                       .doc(user.username)
                       .collection('request')
                       .doc(x)
                       .delete();
-                    await app
+                    app
                       .firestore()
                       .collection('users')
                       .doc(user.username)
                       .collection('friends')
                       .doc(x)
                       .set({});
-                    await app
+                    app
                       .firestore()
                       .collection('users')
                       .doc(x)
                       .collection('friends')
                       .doc(user.username)
                       .set({});
-                    getFriendList();
+                    props.navigation.goBack();
                   }}>
                   Accept
                 </Text>
@@ -117,8 +117,9 @@ const ChatFriend = props => {
                       .collection('users')
                       .doc(user.username)
                       .collection('request')
-                      .doc(x.username)
+                      .doc(x)
                       .delete();
+                    props.navigation.goBack();
                   }}>
                   Reject
                 </Text>

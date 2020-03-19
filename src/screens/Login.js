@@ -46,7 +46,7 @@ const Login = props => {
             source.push(doc.id);
           }
         });
-        if (source.length > 0) {
+        if (source.length >= 0) {
           dispatch(getFriend(source));
           setLoading(false);
           props.navigation.dispatch(
@@ -153,22 +153,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textCon: {
-    marginTop: -60,
     flex: 1,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   logoCon: {
-    flex: 1.5,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: -200,
+    marginBottom: -150,
   },
   logo: {
     width: Dimensions.get('window').width / 1.2,
     height: Dimensions.get('window').width / 1.2,
-    marginTop: -100,
   },
   inputText: {
     borderRadius: 20,

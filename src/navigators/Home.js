@@ -22,7 +22,6 @@ const Home = () => {
       tabBarOptions={{
         showLabel: false,
         // labelPosition: 'beside-icon',
-        style: {marginBottom: -24},
         inactiveBackgroundColor: 'rgba(25,118,210,1)',
         activeBackgroundColor: 'rgba(25,118,210,1)',
       }}>

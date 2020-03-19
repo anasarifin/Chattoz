@@ -134,14 +134,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textCon: {
-    marginTop: -60,
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
   },
   logoCon: {
-    flex: 1.5,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: -200,
