@@ -127,6 +127,8 @@ const ChatList = props => {
               onPress={() =>
                 props.navigation.navigate('chat-main', {
                   receiver: x.username,
+                  name: x.name,
+                  image: imgUrl + x.image,
                 })
               }>
               <Left>
@@ -134,14 +136,16 @@ const ChatList = props => {
               </Left>
               <Body>
                 <Text>{x.name}</Text>
-                <Text note>Doing what you like will always keep you</Text>
+                <Text note numberOfLines={1}>
+                  Doing what you like will always keep you happy ...
+                </Text>
                 <Text
                   note
                   style={{
                     position: 'absolute',
                     fontSize: 12,
                     top: 15,
-                    right: 20,
+                    right: 0,
                   }}>
                   4:12 PM
                 </Text>
@@ -178,20 +182,37 @@ const ChatList = props => {
             size={26}
             style={styles.icon}
             onPress={() => {
-              app
-                .firestore()
-                .collection('users')
-                .doc(search)
-                .collection('request')
-                .doc(user.username)
-                .set({})
-                .then(() => {
-                  setModal(false);
-                  ToastAndroid.show(
-                    'Friend request has been send !',
-                    ToastAndroid.SHORT,
-                  );
-                });
+              if (search === user.username) {
+                ToastAndroid.show('Username not found !', ToastAndroid.SHORT);
+                return false;
+              }
+              if (friend.includes(search)) {
+                ToastAndroid.show(
+                  'You are already be friend !',
+                  ToastAndroid.SHORT,
+                );
+                return false;
+              }
+              Axios.get(url + search).then(resolve => {
+                if (resolve.data.msg) {
+                  ToastAndroid.show('Username not found !', ToastAndroid.SHORT);
+                } else {
+                  app
+                    .firestore()
+                    .collection('users')
+                    .doc(search)
+                    .collection('request')
+                    .doc(user.username)
+                    .set({})
+                    .then(() => {
+                      setModal(false);
+                      ToastAndroid.show(
+                        'Friend request has been send !',
+                        ToastAndroid.SHORT,
+                      );
+                    });
+                }
+              });
             }}
           />
         </View>

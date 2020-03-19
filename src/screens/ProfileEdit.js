@@ -35,6 +35,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {getUser} from '../redux/actions/user';
 import app from '../configs/firebase';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const url = 'http://100.24.32.116:9999/api/v1/users/';
 const imgUrl = 'http://100.24.32.116:9999/public/img/';
@@ -142,6 +143,14 @@ const Profile = props => {
         console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
+      } else if (
+        !['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(
+          response.type,
+        )
+      ) {
+        ToastAndroid.show('File is not image !', ToastAndroid.SHORT);
+      } else if (response.fileSize > 2000000) {
+        ToastAndroid.show('Maximum image size is 2MB !', ToastAndroid.SHORT);
       } else {
         setImage(response);
       }
@@ -169,68 +178,72 @@ const Profile = props => {
       </Header>
       <View>
         <Form style={{alignItems: 'center'}}>
-          <TouchableOpacity
-            style={styles.imageCon}
-            onPress={picker}
-            activeOpacity={1}>
-            <Image
-              source={require('../img/profile.png')}
-              style={styles.imageDefault}
+          <ScrollView>
+            <TouchableOpacity
+              style={styles.imageCon}
+              onPress={picker}
+              activeOpacity={1}>
+              <Image
+                source={require('../img/profile.png')}
+                style={styles.imageDefault}
+              />
+              <Image
+                source={{uri: image ? image.uri : imgUrl + user.image}}
+                style={styles.image}
+              />
+            </TouchableOpacity>
+            <Item stackedLabel style={styles.item}>
+              <Label style={styles.label}>Name</Label>
+              <Input
+                defaultValue={name}
+                onChange={e => setName(e.nativeEvent.text)}
+              />
+            </Item>
+            <Item stackedLabel style={styles.item}>
+              <Label style={styles.label}>Email</Label>
+              <Input
+                defaultValue={email}
+                onChange={e => setEmail(e.nativeEvent.text)}
+              />
+            </Item>
+            <Item stackedLabel style={styles.item}>
+              <Label style={styles.label}>Phone</Label>
+              <Input
+                defaultValue={phone}
+                onChange={e => setPhone(e.nativeEvent.text)}
+              />
+            </Item>
+            <Item stackedLabel style={styles.item}>
+              <Label style={styles.label}>Address</Label>
+              <Input
+                defaultValue={address}
+                onChange={e => setAddress(e.nativeEvent.text)}
+              />
+            </Item>
+            <Picker
+              style={{width: '70%', marginBottom: 10, alignSelf: 'center'}}
+              iosHeader="Select one"
+              mode="dropdown"
+              selectedValue={gender || user.gender}
+              onValueChange={value => setGender(value)}>
+              <Item label="Male" value={0} />
+              <Item label="Female" value={1} />
+            </Picker>
+            <View style={{width: '25%', alignSelf: 'center'}}>
+              <Button
+                title={birthString || 'Birthdate'}
+                onPress={() => setModal(true)}
+              />
+            </View>
+            <DateTimePickerModal
+              isVisible={modal}
+              mode="date"
+              onConfirm={e => {
+                setDate(e);
+              }}
+              onCancel={() => setModal(false)}
             />
-            <Image
-              source={{uri: image ? image.uri : imgUrl + user.image}}
-              style={styles.image}
-            />
-          </TouchableOpacity>
-          <Item stackedLabel style={styles.item}>
-            <Label style={styles.label}>Name</Label>
-            <Input
-              defaultValue={name}
-              onChange={e => setName(e.nativeEvent.text)}
-            />
-          </Item>
-          <Item stackedLabel style={styles.item}>
-            <Label style={styles.label}>Email</Label>
-            <Input
-              defaultValue={email}
-              onChange={e => setEmail(e.nativeEvent.text)}
-            />
-          </Item>
-          <Item stackedLabel style={styles.item}>
-            <Label style={styles.label}>Phone</Label>
-            <Input
-              defaultValue={phone}
-              onChange={e => setPhone(e.nativeEvent.text)}
-            />
-          </Item>
-          <Item stackedLabel style={styles.item}>
-            <Label style={styles.label}>Address</Label>
-            <Input
-              defaultValue={address}
-              onChange={e => setAddress(e.nativeEvent.text)}
-            />
-          </Item>
-          <Picker
-            style={{width: '70%', marginBottom: 10}}
-            iosHeader="Select one"
-            mode="dropdown"
-            selectedValue={gender || user.gender}
-            onValueChange={value => setGender(value)}>
-            <Item label="Male" value={0} />
-            <Item label="Female" value={1} />
-          </Picker>
-          <Button
-            title={birthString || 'Birthdate'}
-            onPress={() => setModal(true)}
-          />
-          <DateTimePickerModal
-            isVisible={modal}
-            mode="date"
-            onConfirm={e => {
-              setDate(e);
-            }}
-            onCancel={() => setModal(false)}
-          />
+          </ScrollView>
         </Form>
       </View>
     </SafeAreaView>
@@ -244,6 +257,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
+    alignSelf: 'center',
   },
   item: {
     marginVertical: 15,

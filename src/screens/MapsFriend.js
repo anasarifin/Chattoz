@@ -49,7 +49,7 @@ const Maps = props => {
   };
 
   useEffect(() => {
-    getLocation();
+    console.log(props.route.params.data);
   }, []);
 
   return (

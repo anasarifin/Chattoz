@@ -103,8 +103,12 @@ const MapsPage = () => {
                     {map.image ? (
                       <Image
                         source={{uri: imgUrl + map.image}}
-                        style={{width: 40, height: 40, borderRadius: 100}}
-                        resizeMode="contain"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 40 / 2,
+                        }}
+                        resizeMode="cover"
                       />
                     ) : (
                       <></>

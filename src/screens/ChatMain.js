@@ -71,6 +71,7 @@ class ChatMain extends React.Component {
 
   getChat = () => {
     const username = this.props.user.user.username;
+    const image = this.props.route.params.image;
     const merge = [username, this.props.route.params.receiver].sort();
     app
       .firestore()
@@ -79,6 +80,7 @@ class ChatMain extends React.Component {
       .collection('chat')
       .orderBy('time', 'desc')
       .onSnapshot(async snapshot => {
+        console.log(image);
         const final = [];
         await snapshot.forEach(doc => {
           final.push({
@@ -88,6 +90,7 @@ class ChatMain extends React.Component {
             user: {
               _id: doc.data().sender === username ? 1 : 2,
               name: doc.data().sender,
+              avatar: doc.data().sender === username ? '' : image,
             },
           });
         });
@@ -98,33 +101,7 @@ class ChatMain extends React.Component {
   };
 
   componentDidMount() {
-    this.props.navigation.setOptions({
-      title: this.props.route.params.name,
-    });
     this.getChat();
-
-    // this.setState({
-    //   messages: [
-    //     {
-    //       _id: 1,
-    //       text: 'Hello developer',
-    //       createdAt: new Date(),
-    //       user: {
-    //         _id: 1,
-    //       },
-    //     },
-    //     {
-    //       _id: 1,
-    //       text: 'Hello dshit!',
-    //       createdAt: new Date(),
-    //       user: {
-    //         _id: 3,
-    //         name: 'React Native',
-    //         avatar: 'https://placeimg.com/140/140/any',
-    //       },
-    //     },
-    //   ],
-    // });
   }
 
   onSend(messages = []) {
@@ -145,7 +122,7 @@ class ChatMain extends React.Component {
             </Button>
           </Left>
           <Body>
-            <Title>{this.props.route.params.receiver}</Title>
+            <Title>{this.props.route.params.name}</Title>
           </Body>
           <Right>
             <Root>
@@ -176,10 +153,15 @@ class ChatMain extends React.Component {
                           .doc(this.props.route.params.receiver)
                           .get()
                           .then(resolve => {
+                            console.log(resolve.data().location);
                             this.props.navigation.navigate('maps-friend', {
                               data: {
-                                latitude: resolve.data().location.O,
-                                longitude: resolve.data().location.F,
+                                latitude:
+                                  resolve.data().location.U ||
+                                  resolve.data().location.O,
+                                longitude:
+                                  resolve.data().location.k ||
+                                  resolve.data().location.F,
                               },
                             });
                           });
@@ -198,7 +180,6 @@ class ChatMain extends React.Component {
             _id: 1,
           }}
           alwaysShowSend={true}
-          onPressAvatar={x => this.check()}
         />
       </>
     );
