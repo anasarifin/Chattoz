@@ -16,11 +16,11 @@ import app from '../configs/firebase';
 const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const MapsPage = () => {
-  const [ready, setReady] = useState(false);
   const [maps, setMaps] = useState([]);
-  const [coordinate, setCoordinate] = useState(false);
   const friend = useSelector(state => state.user.friend);
   const user = useSelector(state => state.user.user);
+  const coordinate = useSelector(state => state.location.coordinate);
+  const ready = useSelector(state => state.location.ready);
 
   const getLocation = () => {
     app
@@ -40,33 +40,33 @@ const MapsPage = () => {
   };
 
   useEffect(() => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setCoordinate({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-        app
-          .firestore()
-          .collection('users')
-          .doc(user.username)
-          .update({
-            location: new firebase.firestore.GeoPoint(
-              position.coords.latitude,
-              position.coords.longitude,
-            ),
-          })
-          .then(resolve => console.log(resolve))
-          .catch(reject => console.log(reject));
-        setReady(true);
-      },
-      error => {
-        // See error code charts below.
-        console.log(error.code, error.message);
-        setReady(true);
-      },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
-    );
+    // Geolocation.getCurrentPosition(
+    //   position => {
+    //     setCoordinate({
+    //       latitude: position.coords.latitude,
+    //       longitude: position.coords.longitude,
+    //     });
+    //     app
+    //       .firestore()
+    //       .collection('users')
+    //       .doc(user.username)
+    //       .update({
+    //         location: new firebase.firestore.GeoPoint(
+    //           position.coords.latitude,
+    //           position.coords.longitude,
+    //         ),
+    //       })
+    //       .then(resolve => console.log(resolve))
+    //       .catch(reject => console.log(reject));
+    //     setReady(true);
+    //   },
+    //   error => {
+    //     // See error code charts below.
+    //     console.log(error.code, error.message);
+    //     setReady(true);
+    //   },
+    //   {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    // );
 
     getLocation();
   }, []);

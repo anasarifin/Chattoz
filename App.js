@@ -15,11 +15,14 @@ import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import {decode, encode} from 'base-64';
 import AsyncStorage from '@react-native-community/async-storage';
+import Geolocation from 'react-native-geolocation-service';
 import {useDispatch} from 'react-redux';
 import Axios from 'axios';
-import {getUser, getFriend, getChat} from './src/redux/actions/user';
+import {getUser, getFriend} from './src/redux/actions/user';
+import {setCoordinate} from './src/redux/actions/location';
 import jwt_decode from 'jwt-decode';
-import app from './src/configs/firebase';
+import firebase from 'firebase';
+import app from '../configs/firebase';
 
 const Stack = createStackNavigator();
 const url = 'http://100.24.32.116:9999/api/v1/users/';
@@ -101,7 +104,44 @@ const App = props => {
     }
   };
 
+  const trackLocation = async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (token) {
+      const username = jwt_decode(token).username;
+      Geolocation.getCurrentPosition(
+        position => {
+          dispatch(
+            setCoordinate({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            }),
+          );
+          app
+            .firestore()
+            .collection('users')
+            .doc(username)
+            .update({
+              location: new firebase.firestore.GeoPoint(
+                position.coords.latitude,
+                position.coords.longitude,
+              ),
+            })
+            .then(resolve => console.log(resolve))
+            .catch(reject => console.log(reject));
+        },
+        error => {
+          // See error code charts below.
+          console.log(error.code, error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    }
+  };
+
   useEffect(() => checkLogin(), []);
+  useEffect(() => {
+    trackLocation();
+  }, []);
 
   return (
     <>
