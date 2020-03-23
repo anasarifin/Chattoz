@@ -6,6 +6,8 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ToastAndroid,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 // import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -23,11 +25,12 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Modal from 'react-native-modal';
+import ModalAdd from 'react-native-modal';
 import app from '../configs/firebase';
 import {useSelector} from 'react-redux';
 import Axios from 'axios';
 import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import ChatFriend from './ChatFriend';
 
 const url = 'http://100.24.32.116:9999/api/v1/users/';
 const imgUrl = 'http://100.24.32.116:9999/public/img/';
@@ -37,9 +40,10 @@ const ChatList = props => {
   const [addFriends, setAddFriends] = useState([]);
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState(false);
+  const [modalFull, setModalFull] = useState(false);
+  const [loading, setLoading] = useState(false);
   const user = useSelector(state => state.user.user);
   const friend = useSelector(state => state.user.friend);
-  const chat = useSelector(state => state.user.chat);
 
   const getFriend = async () => {
     app
@@ -80,11 +84,11 @@ const ChatList = props => {
 
   useEffect(() => {
     getFriend();
-  }, [friend]);
+  }, [friends]);
 
   useEffect(() => {
     getAddFriend();
-  }, [addFriends]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,11 +103,7 @@ const ChatList = props => {
         <Right>
           <TouchableOpacity
             style={{flexDirection: 'row', alignItems: 'center'}}
-            onPress={() =>
-              props.navigation.navigate('chat-friend', {
-                data: addFriends,
-              })
-            }>
+            onPress={() => setModalFull(true)}>
             <Ionicons
               name="md-person-add"
               size={24}
@@ -161,8 +161,14 @@ const ChatList = props => {
           <AntDesign name="pluscircle" color="rgba(33,150,243,1)" size={70} />
         </TouchableOpacity>
       </View>
-
-      <Modal isVisible={modal} onBackButtonPress={() => setModal(false)}>
+      <Modal visible={modalFull} onRequestClose={() => setModalFull(false)}>
+        <ChatFriend
+          user={user}
+          friend={addFriends}
+          back={() => setModalFull(false)}
+        />
+      </Modal>
+      <ModalAdd isVisible={modal} onBackButtonPress={() => setModal(false)}>
         <View
           style={{
             paddingHorizontal: 10,
@@ -177,47 +183,57 @@ const ChatList = props => {
             style={{fontSize: RFPercentage(2.5)}}
             onChange={e => setSearch(e.nativeEvent.text)}
           />
-          <FontAwesome
-            name="search"
-            color="black"
-            size={26}
-            style={styles.icon}
-            onPress={() => {
-              if (search === user.username) {
-                ToastAndroid.show('Username not found !', ToastAndroid.SHORT);
-                return false;
-              }
-              if (friend.includes(search)) {
-                ToastAndroid.show(
-                  'You are already be friend !',
-                  ToastAndroid.SHORT,
-                );
-                return false;
-              }
-              Axios.get(url + search).then(resolve => {
-                if (resolve.data.msg) {
+          {loading ? (
+            <ActivityIndicator style={styles.icon} color="black" />
+          ) : (
+            <FontAwesome
+              name="search"
+              color="black"
+              size={26}
+              style={styles.icon}
+              onPress={() => {
+                if (search === user.username) {
                   ToastAndroid.show('Username not found !', ToastAndroid.SHORT);
-                } else {
-                  app
-                    .firestore()
-                    .collection('users')
-                    .doc(search)
-                    .collection('request')
-                    .doc(user.username)
-                    .set({})
-                    .then(() => {
-                      setModal(false);
-                      ToastAndroid.show(
-                        'Friend request has been send !',
-                        ToastAndroid.SHORT,
-                      );
-                    });
+                  return false;
                 }
-              });
-            }}
-          />
+                if (friend.includes(search)) {
+                  ToastAndroid.show(
+                    'You are already be friend !',
+                    ToastAndroid.SHORT,
+                  );
+                  return false;
+                }
+                setLoading(true);
+                Axios.get(url + search).then(resolve => {
+                  if (resolve.data.msg) {
+                    ToastAndroid.show(
+                      'Username not found !',
+                      ToastAndroid.SHORT,
+                    );
+                    setLoading(false);
+                  } else {
+                    app
+                      .firestore()
+                      .collection('users')
+                      .doc(search)
+                      .collection('request')
+                      .doc(user.username)
+                      .set({})
+                      .then(() => {
+                        setModal(false);
+                        setLoading(false);
+                        ToastAndroid.show(
+                          'Friend request has been send !',
+                          ToastAndroid.SHORT,
+                        );
+                      });
+                  }
+                });
+              }}
+            />
+          )}
         </View>
-      </Modal>
+      </ModalAdd>
     </SafeAreaView>
   );
 };

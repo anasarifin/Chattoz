@@ -27,31 +27,28 @@ const url = 'http://100.24.32.116:9999/api/v1/users/';
 const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const ChatFriend = props => {
-  const [friends, setFriends] = useState([]);
-  const [search, setSearch] = useState('');
-  const [modal, setModal] = useState(false);
-  const user = useSelector(state => state.user.user);
-  const request = props.route.params.data;
-  const dispatch = useDispatch();
-
-  const getFriendList = user => {
+  const accept = x => {
     app
       .firestore()
       .collection('users')
-      .doc(user)
+      .doc(props.user.username)
+      .collection('request')
+      .doc(x)
+      .delete();
+    app
+      .firestore()
+      .collection('users')
+      .doc(props.user.username)
       .collection('friends')
-      .get()
-      .then(async snapshot => {
-        const source = [];
-        await snapshot.forEach(doc => {
-          if (doc) {
-            source.push(doc.id);
-          }
-        });
-        if (source.length > 0) {
-          dispatch(getFriend(source));
-        }
-      });
+      .doc(x)
+      .set({});
+    app
+      .firestore()
+      .collection('users')
+      .doc(x)
+      .collection('friends')
+      .doc(props.user.username)
+      .set({});
   };
 
   return (
@@ -66,7 +63,7 @@ const ChatFriend = props => {
         <Right style={{flex: 1}} />
       </Header>
       <List>
-        {request.map((x, i) => {
+        {props.friend.map((x, i) => {
           return (
             // <TouchableOpacity
             //   key={i}
@@ -83,28 +80,29 @@ const ChatFriend = props => {
                 <Text
                   style={{color: 'blue'}}
                   onPress={() => {
-                    app
-                      .firestore()
-                      .collection('users')
-                      .doc(user.username)
-                      .collection('request')
-                      .doc(x)
-                      .delete();
-                    app
-                      .firestore()
-                      .collection('users')
-                      .doc(user.username)
-                      .collection('friends')
-                      .doc(x)
-                      .set({});
-                    app
-                      .firestore()
-                      .collection('users')
-                      .doc(x)
-                      .collection('friends')
-                      .doc(user.username)
-                      .set({});
-                    props.navigation.goBack();
+                    // app
+                    //   .firestore()
+                    //   .collection('users')
+                    //   .doc(user.username)
+                    //   .collection('request')
+                    //   .doc(x)
+                    //   .delete();
+                    // app
+                    //   .firestore()
+                    //   .collection('users')
+                    //   .doc(user.username)
+                    //   .collection('friends')
+                    //   .doc(x)
+                    //   .set({});
+                    // app
+                    //   .firestore()
+                    //   .collection('users')
+                    //   .doc(x)
+                    //   .collection('friends')
+                    //   .doc(user.username)
+                    //   .set({});
+                    accept(x);
+                    props.back();
                   }}>
                   Accept
                 </Text>
@@ -115,11 +113,11 @@ const ChatFriend = props => {
                     app
                       .firestore()
                       .collection('users')
-                      .doc(user.username)
+                      .doc(props.user.username)
                       .collection('request')
                       .doc(x)
                       .delete();
-                    props.navigation.goBack();
+                    props.back();
                   }}>
                   Reject
                 </Text>
