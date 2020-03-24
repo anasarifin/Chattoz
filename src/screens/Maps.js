@@ -127,7 +127,7 @@ const MapsPage = () => {
         </>
       ) : (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator />
+          <ActivityIndicator color="blue" size="large" />
         </View>
       )}
     </>

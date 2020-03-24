@@ -146,6 +146,13 @@ const App = props => {
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
+    } else {
+      dispatch(
+        setCoordinate({
+          latitude: 0,
+          longitude: 0,
+        }),
+      );
     }
   };
 

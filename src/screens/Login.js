@@ -12,6 +12,7 @@ import {
   Alert,
   BackHandler,
   Dimensions,
+  KeyboardAvoidingView,
 } from 'react-native';
 import Axios from 'axios';
 import {StackActions} from '@react-navigation/native';
@@ -57,6 +58,7 @@ const Login = props => {
   };
 
   const login = async () => {
+    setWarning('');
     if (!username) {
       setWarning('Username is empty !');
       return false;
@@ -100,9 +102,7 @@ const Login = props => {
       <View style={styles.logoCon}>
         <Image source={require('../img/logo.png')} style={styles.logo} />
       </View>
-      <View style={styles.textCon}>
-        <Text style={styles.warning}>{warning}</Text>
-
+      <KeyboardAvoidingView style={styles.textCon}>
         <TextInput
           style={styles.inputText}
           placeholder="Username"
@@ -125,12 +125,13 @@ const Login = props => {
             )}
           </View>
         </TouchableOpacity>
+        <Text style={styles.warning}>{warning}</Text>
         {/* <ActivityIndicator
           style={this.state.loading ? styles.loadingOn : styles.loading}
           color="rgba(30,90,255,.7)"
           size="large"
         /> */}
-      </View>
+      </KeyboardAvoidingView>
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don't have an account?</Text>
         <TouchableOpacity>
@@ -197,12 +198,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   warning: {
-    marginTop: -40,
     fontSize: RFPercentage(2),
     fontWeight: 'bold',
     color: 'white',
     width: 380,
-    marginBottom: 10,
+    marginTop: 10,
     textAlign: 'center',
   },
   footer: {

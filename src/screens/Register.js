@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  KeyboardAvoidingView,
   ToastAndroid,
   Dimensions,
 } from 'react-native';
@@ -28,8 +29,8 @@ const Register = props => {
   const [loading, setLoading] = useState('');
 
   const register = () => {
+    setWarning('');
     const regex = /[a-z0-9]/gi;
-    // console.log(regex.test(this.state.username));
     if (
       username &&
       username.length >= 4 &&
@@ -79,7 +80,7 @@ const Register = props => {
       <View style={styles.logoCon}>
         <Image source={require('../img/logo2.png')} style={styles.logo} />
       </View>
-      <View style={styles.textCon}>
+      <KeyboardAvoidingView style={styles.textCon}>
         <Text style={styles.warning}>{warning}</Text>
 
         <TextInput
@@ -111,7 +112,7 @@ const Register = props => {
             )}
           </View>
         </TouchableOpacity>
-      </View>
+      </KeyboardAvoidingView>
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account?</Text>
         <TouchableOpacity>
@@ -179,12 +180,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   warning: {
-    marginTop: -40,
     fontSize: RFPercentage(2),
     fontWeight: 'bold',
     color: 'white',
     width: 380,
-    marginBottom: 10,
+    marginTop: 10,
     textAlign: 'center',
   },
   footer: {
