@@ -22,7 +22,7 @@ import {getUser, getFriend} from './src/redux/actions/user';
 import {setCoordinate} from './src/redux/actions/location';
 import jwt_decode from 'jwt-decode';
 import firebase from 'firebase';
-import app from '../configs/firebase';
+import app from './src/configs/firebase';
 
 const Stack = createStackNavigator();
 const url = 'http://100.24.32.116:9999/api/v1/users/';
@@ -110,6 +110,7 @@ const App = props => {
       const username = jwt_decode(token).username;
       Geolocation.getCurrentPosition(
         position => {
+          console.log(position);
           dispatch(
             setCoordinate({
               latitude: position.coords.latitude,
@@ -141,6 +142,9 @@ const App = props => {
   useEffect(() => checkLogin(), []);
   useEffect(() => {
     trackLocation();
+    setInterval(() => {
+      trackLocation();
+    }, 60000);
   }, []);
 
   return (

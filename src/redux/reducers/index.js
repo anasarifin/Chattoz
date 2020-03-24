@@ -4,7 +4,7 @@ import getCoordinate from './location';
 
 const reducers = combineReducers({
   user: getUser,
-  coordinate: getCoordinate,
+  location: getCoordinate,
 });
 
 export default reducers;

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 // import {SafeAreaView} from 'react-native-safe-area-context';
 import {
-  Container,
+  Button,
   Header,
   Title,
   List,
@@ -16,7 +16,7 @@ import {
   Left,
   Body,
   Right,
-  Thumbnail,
+  Icon,
   Text,
 } from 'native-base';
 import {useSelector, useDispatch} from 'react-redux';
@@ -56,7 +56,11 @@ const ChatFriend = props => {
       <Header
         style={{backgroundColor: 'rgba(33,150,243,1)'}}
         androidStatusBarColor="rgba(25,118,210,1)">
-        <Left style={{flex: 1}} />
+        <Left style={{flex: 1}}>
+          <Button transparent onPress={props.back}>
+            <Icon name="arrow-back" />
+          </Button>
+        </Left>
         <Body style={{flex: 1}}>
           <Title style={{alignSelf: 'center'}}>Friend Request</Title>
         </Body>
@@ -77,37 +81,17 @@ const ChatFriend = props => {
                 <Text style={{textAlign: 'left'}}>{x}</Text>
               </Body>
               <Right style={{flexDirection: 'row', paddingRight: 15}}>
-                <Text
+                <Button
+                  info
+                  title="Accept"
                   style={{color: 'blue'}}
                   onPress={() => {
-                    // app
-                    //   .firestore()
-                    //   .collection('users')
-                    //   .doc(user.username)
-                    //   .collection('request')
-                    //   .doc(x)
-                    //   .delete();
-                    // app
-                    //   .firestore()
-                    //   .collection('users')
-                    //   .doc(user.username)
-                    //   .collection('friends')
-                    //   .doc(x)
-                    //   .set({});
-                    // app
-                    //   .firestore()
-                    //   .collection('users')
-                    //   .doc(x)
-                    //   .collection('friends')
-                    //   .doc(user.username)
-                    //   .set({});
                     accept(x);
                     props.back();
                   }}>
-                  Accept
-                </Text>
-                <Text> | </Text>
-                <Text
+                  <Text>Accept</Text>
+                </Button>
+                <Button
                   style={{color: 'red'}}
                   onPress={() => {
                     app
@@ -119,8 +103,8 @@ const ChatFriend = props => {
                       .delete();
                     props.back();
                   }}>
-                  Reject
-                </Text>
+                  <Text>Reject</Text>
+                </Button>
               </Right>
             </ListItem>
             // </TouchableOpacity>

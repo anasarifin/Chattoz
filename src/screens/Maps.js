@@ -80,7 +80,7 @@ const MapsPage = () => {
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <MapView
-              initialRegion={{
+              region={{
                 latitude: coordinate ? coordinate.latitude : 0,
                 longitude: coordinate ? coordinate.longitude : 0,
                 latitudeDelta: 0.01,
