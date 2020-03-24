@@ -16,7 +16,7 @@ import Register from './src/screens/Register';
 import {decode, encode} from 'base-64';
 import AsyncStorage from '@react-native-community/async-storage';
 import Geolocation from 'react-native-geolocation-service';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Axios from 'axios';
 import {getUser, getFriend} from './src/redux/actions/user';
 import {setCoordinate} from './src/redux/actions/location';
@@ -37,6 +37,7 @@ const App = props => {
 
   const [login, setLogin] = useState('login');
   const [ready, setReady] = useState(false);
+  const location = useSelector(state => state.location.coordinate);
   const dispatch = useDispatch();
 
   const getFriendList = user => {
@@ -110,29 +111,38 @@ const App = props => {
       const username = jwt_decode(token).username;
       Geolocation.getCurrentPosition(
         position => {
-          console.log(position);
-          dispatch(
-            setCoordinate({
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            }),
-          );
-          app
-            .firestore()
-            .collection('users')
-            .doc(username)
-            .update({
-              location: new firebase.firestore.GeoPoint(
-                position.coords.latitude,
-                position.coords.longitude,
-              ),
-            })
-            .then(resolve => console.log(resolve))
-            .catch(reject => console.log(reject));
+          const newCoordinate = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          if (
+            location.latitude !== position.latitude &&
+            location.longitude !== position.latitude
+          ) {
+            dispatch(setCoordinate(newCoordinate));
+            app
+              .firestore()
+              .collection('users')
+              .doc(username)
+              .update({
+                location: new firebase.firestore.GeoPoint(
+                  position.coords.latitude,
+                  position.coords.longitude,
+                ),
+              })
+              .then(resolve => console.log(resolve))
+              .catch(reject => console.log(reject));
+          }
         },
         error => {
           // See error code charts below.
           console.log(error.code, error.message);
+          dispatch(
+            setCoordinate({
+              latitude: 0,
+              longitude: 0,
+            }),
+          );
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
@@ -142,9 +152,9 @@ const App = props => {
   useEffect(() => checkLogin(), []);
   useEffect(() => {
     trackLocation();
-    // setInterval(() => {
-    //   trackLocation();
-    // }, 60000);
+    setInterval(() => {
+      trackLocation();
+    }, 5000);
   }, []);
 
   return (

@@ -9,6 +9,7 @@ import {
   Image,
   TextInput,
   Button,
+  ActivityIndicator,
 } from 'react-native';
 import {
   Header,
@@ -52,9 +53,12 @@ const Profile = props => {
   const [birthString, setBirthString] = useState('');
   const [image, setImage] = useState(false);
   const [modal, setModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const postData = () => {
+    console.log(user.birth);
+    setLoading(true);
     const formData = new FormData();
     if (name) {
       formData.append('name', name);
@@ -69,7 +73,9 @@ const Profile = props => {
       formData.append('address', address);
     }
     if (birth) {
-      formData.append('birth', birth.slice(0, 10));
+      if (birth !== '0000-00-00') {
+        formData.append('birth', birth.slice(0, 10));
+      }
     }
     if (gender) {
       formData.append('gender', gender);
@@ -87,22 +93,29 @@ const Profile = props => {
       },
     })
       .then(x => {
-        console.log(image);
-        Axios.get(url + user.username).then(resolve => {
-          dispatch(getUser(resolve.data[0]));
-          ToastAndroid.show('Edit success!', ToastAndroid.SHORT);
-          props.navigation.navigate('profile-me');
-          app
-            .firestore()
-            .collection('users')
-            .doc(user.username)
-            .update({
-              name: name || '',
-              image: image
-                ? user.username + '_-_' + image.fileName
-                : user.image,
-            });
-        });
+        console.log(x);
+        Axios.get(url + user.username)
+          .then(resolve => {
+            setLoading(false);
+            dispatch(getUser(resolve.data[0]));
+            ToastAndroid.show('Edit success!', ToastAndroid.SHORT);
+            props.navigation.navigate('profile-me');
+            app
+              .firestore()
+              .collection('users')
+              .doc(user.username)
+              .update({
+                name: name || '',
+                image: image
+                  ? user.username + '_-_' + image.fileName
+                  : user.image,
+              });
+          })
+          .catch(reject => {
+            console.log(reject);
+            setLoading(false);
+            ToastAndroid.show('Adding failed!', ToastAndroid.SHORT);
+          });
         // this.setState({
         //   name: '',
         //   description: '',
@@ -113,8 +126,9 @@ const Profile = props => {
         // });
       })
       .catch(reject => {
-        ToastAndroid.show('Adding failed!', ToastAndroid.SHORT);
         console.log(reject);
+        setLoading(false);
+        ToastAndroid.show('Adding failed!', ToastAndroid.SHORT);
       });
   };
 
@@ -171,9 +185,13 @@ const Profile = props => {
           <Title>Edit Profile</Title>
         </Body>
         <Right>
-          <Text style={styles.save} onPress={postData}>
-            SAVE
-          </Text>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text style={styles.save} onPress={postData}>
+              SAVE
+            </Text>
+          )}
         </Right>
       </Header>
       <View>

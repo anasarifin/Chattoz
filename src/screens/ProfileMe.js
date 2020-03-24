@@ -87,22 +87,38 @@ const Profile = props => {
       <View style={styles.bodyCon}>
         <ScrollView
           contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
-          <View style={styles.body}>
-            <MaterialIcons size={30} name={'email'} color={'white'} />
-            <Text style={styles.text}>{user.email}</Text>
-          </View>
-          <View style={styles.body}>
-            <MaterialIcons size={30} name={'phone'} color={'white'} />
-            <Text style={styles.text}>{user.phone}</Text>
-          </View>
-          <View style={styles.body}>
-            <MaterialIcons size={30} name={'date-range'} color={'white'} />
-            <Text style={styles.text}>{user.birth.slice(0, 10)}</Text>
-          </View>
-          <View style={styles.body}>
-            <Fontisto size={30} name={'home'} color={'white'} />
-            <Text style={styles.text}>{user.address}</Text>
-          </View>
+          {user.email ? (
+            <View style={styles.body}>
+              <MaterialIcons size={30} name={'email'} color={'white'} />
+              <Text style={styles.text}>{user.email}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {user.phone ? (
+            <View style={styles.body}>
+              <MaterialIcons size={30} name={'phone'} color={'white'} />
+              <Text style={styles.text}>{user.phone}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {user.birth.slice(0, 10) !== '0000-00-00' ? (
+            <View style={styles.body}>
+              <MaterialIcons size={30} name={'date-range'} color={'white'} />
+              <Text style={styles.text}>{user.birth.slice(0, 10)}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {user.address ? (
+            <View style={styles.body}>
+              <Fontisto size={30} name={'home'} color={'white'} />
+              <Text style={styles.text}>{user.address}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
         </ScrollView>
       </View>
     </SafeAreaView>

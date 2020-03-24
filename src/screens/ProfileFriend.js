@@ -36,16 +36,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 const imgUrl = 'http://100.24.32.116:9999/public/img/';
 
 const Profile = props => {
-  const userMe = useSelector(state => state.user.user);
   const user = props.route.params.data;
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [phone, setPhone] = useState(user.phone);
-  const [address, setAddress] = useState(user.address);
-  const [birth, setBirth] = useState(user.birth);
-  const [gender, setGender] = useState(user.gender);
-  const [location, setLocation] = useState('');
-  const [modal, setModal] = useState(false);
 
   return (
     <SafeAreaView>
@@ -73,22 +64,38 @@ const Profile = props => {
       <View style={styles.bodyCon}>
         <ScrollView
           contentContainerStyle={{flexGrow: 1, justifyContent: 'center'}}>
-          <View style={styles.body}>
-            <MaterialIcons size={30} name={'email'} color={'white'} />
-            <Text style={styles.text}>{user.email}</Text>
-          </View>
-          <View style={styles.body}>
-            <MaterialIcons size={30} name={'phone'} color={'white'} />
-            <Text style={styles.text}>{user.phone}</Text>
-          </View>
-          <View style={styles.body}>
-            <MaterialIcons size={30} name={'date-range'} color={'white'} />
-            <Text style={styles.text}>{user.birth.slice(0, 10)}</Text>
-          </View>
-          <View style={styles.body}>
-            <Fontisto size={30} name={'map-pin'} color={'white'} />
-            <Text style={styles.text}>{user.address}</Text>
-          </View>
+          {user.email ? (
+            <View style={styles.body}>
+              <MaterialIcons size={30} name={'email'} color={'white'} />
+              <Text style={styles.text}>{user.email}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {user.phone ? (
+            <View style={styles.body}>
+              <MaterialIcons size={30} name={'phone'} color={'white'} />
+              <Text style={styles.text}>{user.phone}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {user.birth.slice(0, 10) !== '0000-00-00' ? (
+            <View style={styles.body}>
+              <MaterialIcons size={30} name={'date-range'} color={'white'} />
+              <Text style={styles.text}>{user.birth.slice(0, 10)}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {user.address ? (
+            <View style={styles.body}>
+              <Fontisto size={30} name={'home'} color={'white'} />
+              <Text style={styles.text}>{user.address}</Text>
+            </View>
+          ) : (
+            <></>
+          )}
         </ScrollView>
       </View>
     </SafeAreaView>

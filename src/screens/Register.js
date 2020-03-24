@@ -44,8 +44,8 @@ const Register = props => {
             .then(resolve => {
               setLoading(false);
               if (resolve.data.insertId) {
-                ToastAndroid.show('Register success!', ToastAndroid.SHORT);
                 props.navigation.navigate('login');
+                ToastAndroid.show('Register success!', ToastAndroid.SHORT);
                 app
                   .firestore()
                   .collection('users')
