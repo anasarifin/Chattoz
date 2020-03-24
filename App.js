@@ -142,9 +142,9 @@ const App = props => {
   useEffect(() => checkLogin(), []);
   useEffect(() => {
     trackLocation();
-    setInterval(() => {
-      trackLocation();
-    }, 60000);
+    // setInterval(() => {
+    //   trackLocation();
+    // }, 60000);
   }, []);
 
   return (
